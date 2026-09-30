@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# RastroCero — Landing page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sitio público de RastroCero: contabilidad de carbono para instituciones financieras
+(GHG Protocol alcances 1, 2 y 3 + emisiones financiadas PCAF).
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React 19 · TypeScript · Vite 7 · Tailwind CSS v4 · React Router 7 · lucide-react.
+Bilingüe (ES/EN) sin librerías de i18n.
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # servidor local
+npm run build    # typecheck + bundle en dist/
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Variables de entorno
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Copiar `.env.example` a `.env`:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variable | Uso |
+|----------|-----|
+| `VITE_WEB3FORMS_KEY` | Clave de Web3Forms para el formulario de `/contact` |
+
+## Estructura
+
 ```
+src/
+  i18n/          textos ES/EN (translations.ts) y contexto de idioma
+  components/    Navbar, Footer, AppMockup, FlowLines, Logo, Reveal, SectionHeading
+  sections/      bloques de la home (Hero, Facts, Challenge, Operational, Pcaf, Process, Security, CtaBand)
+  pages/         Home y Contact
+public/brand/    logos recortados, fondo del hero (webp) y hoja
+```
+
+## Sistema visual
+
+Los tokens de `src/index.css` (`--color-r0-*`) son los mismos de la plataforma
+(`R0_PLATFORM/frontend/src/index.css`), así el sitio y el producto se leen como un solo sistema.
+Se suman tres colores corporativos: `r0-leaf` (hoja del logo), `r0-ink` (gris del logotipo) y
+`r0-sun` (acento de energía).
+
+- Tipografía: Montserrat para títulos (la del logotipo) e Inter para texto.
+- Logo: gris + hoja verde sobre fondo claro, blanco + hoja verde sobre fondo oscuro,
+  todo blanco sobre el verde de marca (`components/Logo.tsx`).
+- `AppMockup` replica el shell real de la plataforma (rail de módulos, sidebar de herramientas,
+  top bar del banco). Sus cifras son ilustrativas y consistentes entre sí.
+- `FlowLines` reutiliza las líneas animadas del fondo de la plataforma.
+
+El idioma se elige con el botón ES/EN, con `?lang=en` en la URL, y se recuerda por navegador.
+
+## Deploy
+
+Build estático (`dist/`). `public/_redirects` hace el fallback SPA para Netlify.

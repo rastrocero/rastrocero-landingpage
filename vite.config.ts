@@ -4,14 +4,4 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'hls': ['hls.js'],
-          'motion': ['motion/react'],
-        },
-      },
-    },
-  },
 })

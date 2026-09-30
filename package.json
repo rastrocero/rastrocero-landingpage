@@ -1,7 +1,7 @@
 {
-  "name": "rastrolanding2",
+  "name": "rastrocero-landing",
   "private": true,
-  "version": "0.0.0",
+  "version": "3.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,13 +12,10 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "clsx": "^2.1.1",
-    "hls.js": "^1.6.15",
     "lucide-react": "^0.563.0",
-    "motion": "^12.34.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0",
-    "react-use-measure": "^2.1.7",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18"
   },
