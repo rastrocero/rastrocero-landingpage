@@ -95,8 +95,7 @@ export function Contact() {
 
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
         <div className="lg:col-span-5">
-          <p className="inline-flex items-center gap-2 font-display text-xs font-semibold uppercase tracking-[0.22em] text-r0-primary-medium">
-            <span className="h-px w-6 bg-r0-primary-medium/50" />
+          <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-r0-primary-medium">
             {f.eyebrow}
           </p>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-r0-text sm:text-5xl">{f.title}</h1>
@@ -131,7 +130,7 @@ export function Contact() {
         </div>
 
         <div className="lg:col-span-7">
-          <div className="rounded-2xl border border-r0-border bg-white p-6 shadow-[0_30px_60px_-40px_rgba(15,36,25,0.4)] sm:p-8">
+          <div className="rounded-xl border border-r0-border bg-white p-6 shadow-sm sm:p-8">
             {status === 'success' ? (
               <div className="flex flex-col items-center py-16 text-center" role="status">
                 <span className="flex size-14 items-center justify-center rounded-full bg-r0-cream text-r0-primary-light">
@@ -226,7 +225,7 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={status === 'sending'}
-                    className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-r0-primary-light px-6 text-[15px] font-semibold text-white shadow-[0_10px_24px_-12px_rgba(27,67,50,0.8)] transition-colors hover:bg-r0-primary disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-r0-primary-light px-6 text-[15px] font-semibold text-white transition-colors hover:bg-r0-primary disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {status === 'sending' ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
                     {status === 'sending' ? f.sending : f.submit}

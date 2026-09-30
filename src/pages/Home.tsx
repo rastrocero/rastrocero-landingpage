@@ -1,5 +1,5 @@
 import { Hero } from '../sections/Hero'
-import { Facts } from '../sections/Facts'
+import { ProductView } from '../sections/ProductView'
 import { Challenge } from '../sections/Challenge'
 import { Operational } from '../sections/Operational'
 import { Pcaf } from '../sections/Pcaf'
@@ -11,7 +11,7 @@ export function Home() {
   return (
     <>
       <Hero />
-      <Facts />
+      <ProductView />
       <Challenge />
       <Operational />
       <Pcaf />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ArrowRight, Globe, Menu, X } from 'lucide-react'
+import { ArrowRight, Menu, X } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { cn } from '../lib/cn'
 import { Logo } from './Logo'
@@ -64,7 +64,7 @@ export function Navbar() {
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300',
         solid
-          ? 'border-b border-r0-border/80 bg-white/85 shadow-[0_1px_0_rgba(0,0,0,0.02)] backdrop-blur-xl'
+          ? 'border-b border-r0-border bg-white'
           : 'border-b border-transparent bg-transparent',
       )}
     >
@@ -94,14 +94,13 @@ export function Navbar() {
             onClick={toggle}
             aria-label={t.nav.switchLang}
             title={t.nav.switchLang}
-            className="hidden h-9 items-center gap-1.5 rounded-lg border border-r0-border bg-white/70 px-2.5 text-xs font-semibold text-r0-text-secondary transition-colors hover:border-r0-accent/60 hover:text-r0-text sm:inline-flex"
+            className="hidden h-9 items-center px-2 text-xs font-semibold tracking-wide text-r0-text-secondary transition-colors hover:text-r0-text sm:inline-flex"
           >
-            <Globe className="size-3.5" />
             {locale === 'es' ? 'EN' : 'ES'}
           </button>
           <Link
             to="/contact"
-            className="hidden h-9 items-center gap-1.5 rounded-lg bg-r0-primary-light px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-r0-primary md:inline-flex"
+            className="hidden h-9 items-center rounded-lg border border-r0-border bg-white px-4 text-sm font-semibold text-r0-text transition-colors hover:border-r0-primary-light hover:text-r0-primary md:inline-flex"
           >
             {t.nav.demo}
           </Link>
@@ -136,9 +135,8 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={toggle}
-                className="inline-flex h-11 items-center gap-2 rounded-lg border border-r0-border px-4 text-sm font-semibold text-r0-text-secondary"
+                className="inline-flex h-11 items-center rounded-lg border border-r0-border px-4 text-sm font-semibold text-r0-text-secondary"
               >
-                <Globe className="size-4" />
                 {locale === 'es' ? 'English' : 'Español'}
               </button>
               <Link

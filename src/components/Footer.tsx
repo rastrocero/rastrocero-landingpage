@@ -16,9 +16,6 @@ export function Footer() {
             <Logo className="h-[17px]" />
           </Link>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-r0-text-secondary">{f.tagline}</p>
-          <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-r0-primary-medium">
-            {f.standards}
-          </p>
         </div>
 
         <div className="md:col-span-4">
@@ -54,10 +51,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-r0-border">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-r0-text-muted sm:flex-row sm:px-6 lg:px-8">
-          <p>{f.copy}</p>
-          <p className="font-display tracking-[0.3em]">RASTROCERO</p>
-        </div>
+        <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-r0-text-muted sm:px-6 lg:px-8">{f.copy}</p>
       </div>
     </footer>
   )

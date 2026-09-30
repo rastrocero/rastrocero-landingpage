@@ -73,35 +73,12 @@
 .flow-line--slow   { stroke-dasharray: 15 15; animation: flowDash 3s linear infinite; }
 .flow-line--fast   { stroke-dasharray: 25 5;  animation: flowDash 1.5s linear infinite; }
 
-/* ── Mockup view swap (platform's toolRailIn) ──────────────────────────── */
-
-@keyframes toolRailIn {
-  from { opacity: 0; transform: translateX(14px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.anim-rail-in { animation: toolRailIn 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-@keyframes barGrow {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
-}
-
-.anim-bar { transform-origin: bottom; animation: barGrow 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-
-.anim-pulse-dot { animation: pulseDot 2.2s ease-in-out infinite; }
-
 /* ── Scroll reveal ─────────────────────────────────────────────────────── */
 
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(8px);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
   transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -110,12 +87,8 @@
   transform: none;
 }
 
-.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .flow-line--normal, .flow-line--slow, .flow-line--fast,
-  .anim-rail-in, .anim-bar, .anim-pulse-dot { animation: none; }
+  .flow-line--normal, .flow-line--slow, .flow-line--fast { animation: none; }
 }
