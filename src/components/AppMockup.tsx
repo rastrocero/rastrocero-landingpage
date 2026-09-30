@@ -11,6 +11,7 @@ import {
   Info,
   Landmark,
   LayoutDashboard,
+  LayoutGrid,
   Lock,
   Table2,
   Truck,
@@ -31,7 +32,10 @@ import { FlowLines } from './FlowLines'
  * to the overall total.
  */
 
-type View = 'operativo' | 'pcaf'
+type View = 'inicio' | 'operativo' | 'pcaf'
+
+/* Same order as the platform's rail: the shell opens on Inicio. */
+const NEXT_VIEW: Record<View, View> = { inicio: 'operativo', operativo: 'pcaf', pcaf: 'inicio' }
 
 const SCOPE_TOTALS = [412.8, 301.5, 570.3]
 const TOTAL = 1284.6
@@ -49,7 +53,9 @@ const BRANCH_VALUES = [512.3, 298.7, 204.1]
 const SCOPE_COLORS = ['var(--color-r0-primary-light)', 'var(--color-r0-accent)', 'var(--color-r0-accent-light)']
 const CATEGORY_COLORS = ['var(--color-r0-sun)', 'var(--color-r0-primary-light)', 'var(--color-r0-accent)', 'var(--color-r0-accent-light)']
 
-const CYCLE_MS = 6500
+/* Time on each tab while the shell plays by itself; a click pauses the cycle for a while. */
+const VIEW_MS: Record<View, number> = { inicio: 3200, operativo: 4200, pcaf: 4000 }
+const RESUME_MS = 12000
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -79,11 +85,13 @@ interface RailTileProps {
   label: string
   active?: boolean
   onClick?: () => void
+  /** While autoplaying, the active tile shows how long until the next tab. */
+  progressMs?: number
 }
 
-function RailTile({ icon: Icon, label, active, onClick }: RailTileProps) {
+function RailTile({ icon: Icon, label, active, onClick, progressMs }: RailTileProps) {
   const className = cn(
-    'flex size-[58px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg border px-0.5 transition-all duration-200',
+    'relative flex size-[58px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg border px-0.5 transition-all duration-200',
     active
       ? 'border-transparent bg-r0-accent text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.5)]'
       : 'border-r0-border bg-r0-surface text-r0-text-secondary',
@@ -95,6 +103,11 @@ function RailTile({ icon: Icon, label, active, onClick }: RailTileProps) {
       <span className={cn('w-full text-center text-[8.5px] leading-[1.1] tracking-tight', active ? 'font-semibold' : 'font-medium')}>
         {label}
       </span>
+      {active && progressMs ? (
+        <span aria-hidden className="absolute inset-x-2 bottom-1 h-[2px] overflow-hidden rounded-full bg-white/30">
+          <span className="anim-progress block h-full origin-left bg-white" style={{ animationDuration: `${progressMs}ms` }} />
+        </span>
+      ) : null}
     </>
   )
   return onClick ? (
@@ -306,6 +319,42 @@ function OperationalView() {
   )
 }
 
+function InicioView() {
+  const { t } = useLanguage()
+  const i = t.mockup.inicio
+
+  return (
+    <div className="relative h-full overflow-hidden">
+      {/* ShellBackdrop, parked left as on the platform's home screen */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url('/brand/hero-bg-sm.webp')",
+          backgroundSize: 'cover',
+          backgroundPosition: '15% 100%',
+          opacity: 0.6,
+          maskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
+        }}
+      />
+      <FlowLines />
+      <div className="anim-rail-in relative z-[1] flex h-full items-center justify-center px-8">
+        <div className="w-full max-w-md rounded-3xl border border-r0-border bg-r0-surface/85 px-10 py-12 text-center shadow-[0_24px_60px_-30px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-r0-primary-medium">{i.kicker}</p>
+          <div className="mt-4 flex items-center justify-center gap-2.5">
+            <span className="flex size-9 items-center justify-center rounded-lg bg-r0-primary text-white">
+              <Landmark className="size-5" strokeWidth={2} />
+            </span>
+            <span className="font-display text-3xl font-semibold tracking-tight text-r0-primary">{t.mockup.bank}</span>
+          </div>
+          <p className="mt-3 text-[12px] text-r0-text-secondary">{i.sub}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function FinancedView() {
   const { t } = useLanguage()
 
@@ -404,28 +453,36 @@ function MobileShell() {
 
 export function AppMockup({ className, style }: { className?: string; style?: CSSProperties }) {
   const { t } = useLanguage()
-  const [view, setView] = useState<View>('operativo')
-  const [autoplay, setAutoplay] = useState(true)
-  const [hovered, setHovered] = useState(false)
+  const [view, setView] = useState<View>('inicio')
+  // 0 while playing; otherwise the time of the last manual pick.
+  const [pausedAt, setPausedAt] = useState(0)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.3 })
+  const reducedMotion = prefersReducedMotion()
+  const playing = inView && !reducedMotion && pausedAt === 0
 
   useEffect(() => {
-    if (!autoplay || hovered || !inView || prefersReducedMotion()) return
-    const timer = setTimeout(() => setView((v) => (v === 'operativo' ? 'pcaf' : 'operativo')), CYCLE_MS)
+    if (!inView || reducedMotion) return
+    const timer = pausedAt
+      ? setTimeout(() => setPausedAt(0), RESUME_MS)
+      : setTimeout(() => setView((v) => NEXT_VIEW[v]), VIEW_MS[view])
     return () => clearTimeout(timer)
-  }, [autoplay, hovered, inView, view])
+  }, [inView, reducedMotion, pausedAt, view])
 
   const pick = (next: View) => {
-    setAutoplay(false)
+    setPausedAt(Date.now())
     setView(next)
   }
+  const progress = (v: View) => (playing && view === v ? VIEW_MS[v] : undefined)
 
   const op = t.mockup.operational
   const fin = t.mockup.financed
   const tools: Tool[] =
-    view === 'operativo'
-      ? [LayoutDashboard, Table2, ClipboardList, Building].map((icon, i) => ({ icon, name: op.tools[i], active: i === 0 }))
-      : [Users, Building2, Globe].map((icon, i) => ({ icon, name: fin.tools[i], disabled: true }))
+    view === 'inicio'
+      ? [{ icon: LayoutGrid, name: t.mockup.inicio.tool, active: true }]
+      : view === 'operativo'
+        ? [LayoutDashboard, Table2, ClipboardList, Building].map((icon, i) => ({ icon, name: op.tools[i], active: i === 0 }))
+        : [Users, Building2, Globe].map((icon, i) => ({ icon, name: fin.tools[i], disabled: true }))
+  const title = view === 'inicio' ? t.mockup.inicio.title : view === 'operativo' ? op.title : fin.title
 
   return (
     <div
@@ -435,8 +492,6 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
         className,
       )}
       style={style}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <WindowChrome url={t.mockup.url} />
 
@@ -447,9 +502,9 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
           </div>
           <div className="w-full border-t border-r0-border" />
           <div className="flex flex-1 flex-col items-center gap-1.5 py-2.5">
-            <RailTile icon={House} label={t.mockup.rail.inicio} />
-            <RailTile icon={Truck} label={t.mockup.rail.operativo} active={view === 'operativo'} onClick={() => pick('operativo')} />
-            <RailTile icon={BriefcaseBusiness} label={t.mockup.rail.pcaf} active={view === 'pcaf'} onClick={() => pick('pcaf')} />
+            <RailTile icon={House} label={t.mockup.rail.inicio} active={view === 'inicio'} onClick={() => pick('inicio')} progressMs={progress('inicio')} />
+            <RailTile icon={Truck} label={t.mockup.rail.operativo} active={view === 'operativo'} onClick={() => pick('operativo')} progressMs={progress('operativo')} />
+            <RailTile icon={BriefcaseBusiness} label={t.mockup.rail.pcaf} active={view === 'pcaf'} onClick={() => pick('pcaf')} progressMs={progress('pcaf')} />
             <RailTile icon={CalendarDays} label={t.mockup.rail.eventos} />
           </div>
           <div className="flex w-full justify-center border-t border-r0-border py-3">
@@ -457,12 +512,12 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
           </div>
         </nav>
 
-        <Sidebar title={view === 'operativo' ? op.title : fin.title} tools={tools} swapKey={view} />
+        <Sidebar title={title} tools={tools} swapKey={view} />
 
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar bank={t.mockup.bank} />
           <div className="relative min-h-0 flex-1" key={view}>
-            {view === 'operativo' ? <OperationalView /> : <FinancedView />}
+            {view === 'inicio' ? <InicioView /> : view === 'operativo' ? <OperationalView /> : <FinancedView />}
           </div>
         </div>
       </div>

@@ -30,6 +30,7 @@ const es = {
     url: 'rastrocero.tubanco.com',
     bank: 'Tu Banco',
     rail: { inicio: 'Inicio', operativo: 'Operativo', pcaf: 'PCAF', eventos: 'Eventos' },
+    inicio: { title: 'Inicio', tool: 'Resumen general', kicker: 'RastroCero para', sub: 'Contabilidad de carbono · 2026' },
     unit: 'tCO₂e',
     operational: {
       title: 'Módulo Operacional',
@@ -242,6 +243,7 @@ const en: Dict = {
     url: 'rastrocero.yourbank.com',
     bank: 'Your Bank',
     rail: { inicio: 'Home', operativo: 'Operational', pcaf: 'PCAF', eventos: 'Events' },
+    inicio: { title: 'Home', tool: 'Overview', kicker: 'RastroCero for', sub: 'Carbon accounting · 2026' },
     unit: 'tCO₂e',
     operational: {
       title: 'Operational Module',
