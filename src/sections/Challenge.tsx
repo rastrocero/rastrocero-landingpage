@@ -60,7 +60,7 @@ export function Challenge() {
   const c = t.challenge
 
   return (
-    <section className="bg-r0-bg py-16 sm:py-24">
+    <section className="bg-white py-16 sm:py-24">
       <Reveal className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
         <div className="lg:col-span-5">
           <SectionHeading eyebrow={c.eyebrow} title1={c.title1} title2={c.title2} />

@@ -30,10 +30,10 @@ Copiar `.env.example` a `.env`:
 ```
 src/
   i18n/          textos ES/EN (translations.ts) y contexto de idioma
-  components/    Navbar, Footer, FlowLines, Logo, Reveal, SectionHeading
-  sections/      bloques de la home (Hero, ProductView, Challenge, Operational, Pcaf, Process, Security, CtaBand)
+  components/    Navbar, Footer, AppMockup, FlowLines, Logo, Reveal, SectionHeading
+  sections/      bloques de la home (Hero, ProductView, Challenge, Modules, Process, Security, CtaBand)
   pages/         Home y Contact
-public/brand/    logos recortados, paisaje de hojas (webp) y hoja; b/ = recorte usado en el hero
+public/brand/    logos recortados, paisaje de hojas (webp) y hoja; hero/ = arte del hero
 ```
 
 ## Sistema visual
@@ -46,9 +46,13 @@ Se suman tres colores corporativos: `r0-leaf` (hoja del logo), `r0-ink` (gris de
 - Tipografía: Montserrat para títulos (la del logotipo) e Inter para texto.
 - Logo: gris + hoja verde sobre fondo claro, blanco + hoja verde sobre fondo oscuro,
   todo blanco sobre el verde de marca (`components/Logo.tsx`).
-- `ProductView` muestra una vista estática del módulo operativo (rail de módulos + resumen por
-  alcance) tal como se ve en la plataforma. Sus cifras son ilustrativas y consistentes entre sí.
-- `FlowLines` reutiliza las líneas animadas del fondo de la plataforma (solo en el CTA y en contacto).
+- El hero ocupa toda la pantalla (`min-h-svh`); su arte se mueve lento (deriva en dos ejes +
+  corrientes SVG sobre las olas, bloque `Hero stream` en `index.css`) y se detiene con
+  `prefers-reduced-motion`.
+- `AppMockup` (en `ProductView`) replica el shell real de la plataforma y alterna solo entre el
+  dashboard operativo y el selector PCAF. Sus cifras son ilustrativas y consistentes entre sí.
+- `Modules` presenta Operativo y PCAF en dos paneles: alcances 1-2-3 y la escala DQS 1→5.
+- `FlowLines` reutiliza las líneas animadas del fondo de la plataforma (CTA y contacto).
 - Criterio: un solo botón lleno por pantalla, títulos en un color, sin íconos decorativos;
   la jerarquía la hacen la tipografía y las líneas finas, como en la plataforma.
 

@@ -13,11 +13,16 @@ function useActiveSection(enabled: boolean) {
 
   useEffect(() => {
     if (!enabled) return
+    // Track every section currently crossing the band, so scrolling back to the
+    // hero (where none does) clears the highlight instead of keeping the last one.
+    const visible = new Set<string>()
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id)
+          if (entry.isIntersecting) visible.add(entry.target.id)
+          else visible.delete(entry.target.id)
         }
+        setActive(SECTION_IDS.find((id) => visible.has(id)) ?? null)
       },
       { rootMargin: '-45% 0px -50% 0px' },
     )
@@ -69,11 +74,11 @@ export function Navbar() {
       )}
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="shrink-0 py-2" onClick={() => setOpen(false)} aria-label="RastroCero">
+        <Link to="/" className="shrink-0 rounded-md py-2" onClick={() => setOpen(false)} aria-label="RastroCero">
           <Logo className="h-[15px] sm:h-[17px]" />
         </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {links.map((l) => (
             <Link
               key={l.id}
@@ -106,7 +111,7 @@ export function Navbar() {
           </Link>
           <button
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-lg text-r0-text md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-lg text-r0-text lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -118,7 +123,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="border-t border-r0-border bg-white md:hidden">
+        <div id="mobile-menu" className="border-t border-r0-border bg-white lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col px-4 py-3 sm:px-6">
             {links.map((l) => (
               <Link
