@@ -1,6 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { Reveal } from '../components/Reveal'
 import { SectionHeading } from '../components/SectionHeading'
+import { dqsColor } from '../lib/pcaf'
 
 /* Syntax colours for the snapshot block */
 const K = 'text-r0-accent-light'
@@ -8,6 +9,25 @@ const S = 'text-r0-cream'
 const N = 'text-r0-sun'
 const P = 'text-white/40'
 
+/* One JSON line: key, value and whether the value is a string. */
+function Line({ k, v, str, last }: { k: string; v: string; str?: boolean; last?: boolean }) {
+  return (
+    <>
+      {'  '}
+      <span className={K}>"{k}"</span>
+      <span className={P}>: </span>
+      <span className={str ? S : N}>{str ? `"${v}"` : v}</span>
+      {!last && <span className={P}>,</span>}
+      {'\n'}
+    </>
+  )
+}
+
+/*
+ * A financed exposure as the platform stores it: the inputs, the PCAF option
+ * and score, and the immutable calculation snapshot. Business loan to an
+ * unlisted company: 2.4 M / (equity + debt 18 M) = 13.33 % of 4,520 tCO2e.
+ */
 function RecordCard() {
   const { t } = useLanguage()
   const r = t.security.record
@@ -30,26 +50,37 @@ function RecordCard() {
           </div>
         ))}
         <div className="flex items-center justify-between gap-4 py-2.5 text-[13px]">
-          <dt className="text-r0-text-secondary">{r.replacesLabel}</dt>
+          <dt className="text-r0-text-secondary">{r.optionLabel}</dt>
+          <dd className="flex items-center gap-2 font-medium text-r0-text">
+            {r.optionValue}
+            <span className="rounded-full px-2 py-0.5 text-[10px] font-medium text-white" style={{ backgroundColor: dqsColor(2) }}>
+              {t.mockup.registry.score} 2
+            </span>
+          </dd>
+        </div>
+        <div className="flex items-center justify-between gap-4 py-2.5 text-[13px]">
+          <dt className="text-r0-text-secondary">{r.staleLabel}</dt>
           <dd className="flex items-center gap-2 text-r0-text-muted">
-            <span className="font-mono line-through">{r.replacesId}</span>
-            <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold">{r.voided}</span>
+            <span className="font-mono line-through">C-0412</span>
+            <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold">{r.staleTag}</span>
           </dd>
         </div>
       </dl>
 
       <div className="mx-5 mb-5 mt-2 overflow-hidden rounded-lg bg-r0-deep">
-        <p className="border-b border-white/10 px-4 py-2 font-mono text-[10.5px] text-white/50">applied_factor_snapshot</p>
+        <p className="border-b border-white/10 px-4 py-2 font-mono text-[10.5px] text-white/50">calculation_snapshot</p>
         <pre className="whitespace-pre-wrap break-words px-4 py-3 font-mono text-[11.5px] leading-[1.7]">
           <code>
             <span className={P}>{'{'}</span>{'\n'}
-            {'  '}<span className={K}>"name"</span><span className={P}>: </span><span className={S}>"{r.factorName}"</span><span className={P}>,</span>{'\n'}
-            {'  '}<span className={K}>"value"</span><span className={P}>: </span><span className={N}>2.51</span><span className={P}>,</span>{'\n'}
-            {'  '}<span className={K}>"unit"</span><span className={P}>: </span><span className={S}>"kgCO2e / L"</span><span className={P}>,</span>{'\n'}
-            {'  '}<span className={K}>"metadata"</span><span className={P}>: {'{'}</span>{'\n'}
-            {'    '}<span className={K}>"fuel_group"</span><span className={P}>: </span><span className={S}>"Diesel"</span><span className={P}>,</span>{'\n'}
-            {'    '}<span className={K}>"component"</span><span className={P}>: </span><span className={S}>"direct"</span>{'\n'}
-            {'  '}<span className={P}>{'}'}</span>{'\n'}
+            <Line k="asset_class" v="business_loans" str />
+            <Line k="pcaf_option" v="1b" str />
+            <Line k="data_quality_score" v="2" />
+            <Line k="outstanding_amount" v="2400000" />
+            <Line k="equity_plus_debt" v="18000000" />
+            <Line k="attribution_factor" v="0.1333" />
+            <Line k="borrower_emissions_tco2e" v="4520" />
+            <Line k="engine_version" v="v2" str />
+            <Line k="input_fingerprint" v="sha256:9f2c…41ab" str last />
             <span className={P}>{'}'}</span>
           </code>
         </pre>

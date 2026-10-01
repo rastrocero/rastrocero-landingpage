@@ -1,7 +1,7 @@
 import { Hero } from '../sections/Hero'
 import { ProductView } from '../sections/ProductView'
 import { Challenge } from '../sections/Challenge'
-import { Modules } from '../sections/Modules'
+import { EmissionsBanker } from '../sections/EmissionsBanker'
 import { Process } from '../sections/Process'
 import { Security } from '../sections/Security'
 import { CtaBand } from '../sections/CtaBand'
@@ -12,7 +12,7 @@ export function Home() {
       <Hero />
       <ProductView />
       <Challenge />
-      <Modules />
+      <EmissionsBanker />
       <Process />
       <Security />
       <CtaBand />

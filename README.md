@@ -1,7 +1,8 @@
 # RastroCero — Landing page
 
-Sitio público de RastroCero: contabilidad de carbono para instituciones financieras
-(GHG Protocol alcances 1, 2 y 3 + emisiones financiadas PCAF).
+Sitio público de RastroCero. Producto: **Emissions Banker**, emisiones financiadas de la cartera
+de bancos e instituciones financieras con metodologías PCAF (el módulo operativo de la plataforma
+no se ofrece en esta etapa y no aparece en el sitio).
 
 ## Stack
 
@@ -31,7 +32,7 @@ Copiar `.env.example` a `.env`:
 src/
   i18n/          textos ES/EN (translations.ts) y contexto de idioma
   components/    Navbar, Footer, AppMockup, FlowLines, Logo, Reveal, SectionHeading
-  sections/      bloques de la home (Hero, ProductView, Challenge, Modules, Process, Security, CtaBand)
+  sections/      bloques de la home (Hero, ProductView, Challenge, EmissionsBanker, Process, Security, CtaBand)
   pages/         Home y Contact
 public/brand/    logos recortados, paisaje de hojas (webp) y hoja; hero/ = arte del hero
 ```
@@ -49,9 +50,10 @@ Se suman tres colores corporativos: `r0-leaf` (hoja del logo), `r0-ink` (gris de
 - El hero ocupa toda la pantalla (`min-h-svh`); su arte se mueve lento (deriva en dos ejes +
   corrientes SVG sobre las olas, bloque `Hero stream` en `index.css`) y se detiene con
   `prefers-reduced-motion`.
-- `AppMockup` (en `ProductView`) replica el shell real de la plataforma y alterna solo entre el
-  dashboard operativo y el selector PCAF. Sus cifras son ilustrativas y consistentes entre sí.
-- `Modules` presenta Operativo y PCAF en dos paneles: alcances 1-2-3 y la escala DQS 1→5.
+- `AppMockup` (en `ProductView`) replica el shell real de la plataforma, solo Inicio y PCAF:
+  alterna Inicio → productos PCAF → registro de exposiciones. Cifras ilustrativas y consistentes.
+- `EmissionsBanker` es la sección del producto: clases de activo, carga de cartera, factor de
+  atribución y Data Quality Score (colores de score iguales a la plataforma, `lib/pcaf.ts`).
 - `FlowLines` reutiliza las líneas animadas del fondo de la plataforma (CTA y contacto).
 - Criterio: un solo botón lleno por pantalla, títulos en un color, sin íconos decorativos;
   la jerarquía la hacen la tipografía y las líneas finas, como en la plataforma.

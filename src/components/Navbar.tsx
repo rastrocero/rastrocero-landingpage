@@ -5,7 +5,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { cn } from '../lib/cn'
 import { Logo } from './Logo'
 
-const SECTION_IDS = ['plataforma', 'pcaf', 'proceso', 'seguridad'] as const
+const SECTION_IDS = ['plataforma', 'emissions-banker', 'proceso', 'seguridad'] as const
 
 /** Highlights the nav link of the section currently crossing the middle of the viewport. */
 function useActiveSection(enabled: boolean) {
@@ -57,7 +57,7 @@ export function Navbar() {
 
   const links = [
     { id: 'plataforma', label: t.nav.platform },
-    { id: 'pcaf', label: t.nav.pcaf },
+    { id: 'emissions-banker', label: t.nav.product },
     { id: 'proceso', label: t.nav.process },
     { id: 'seguridad', label: t.nav.security },
   ]

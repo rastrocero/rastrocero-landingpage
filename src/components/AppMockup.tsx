@@ -1,64 +1,66 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import {
   BriefcaseBusiness,
-  Building,
   Building2,
-  CalendarDays,
-  ChevronDown,
-  ClipboardList,
   Globe,
   House,
   Info,
   Landmark,
-  LayoutDashboard,
   LayoutGrid,
   Lock,
   Table2,
-  Truck,
   UserCog,
   Users,
   type LucideIcon,
 } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { useInView } from '../hooks/useInView'
-import { PCAF_ICONS, formatNumber } from '../lib/pcaf'
+import { PCAF_ICONS, dqsColor, formatNumber } from '../lib/pcaf'
 import { cn } from '../lib/cn'
 import { FlowLines } from './FlowLines'
 
 /*
  * A faithful, static replica of the R0 platform shell (icon rail → tool
- * sidebar → top bar + outlet). Figures are illustrative and internally
- * consistent: monthly values add up to the scope totals, and categories add up
- * to the overall total.
+ * sidebar → top bar + outlet), limited to what the pilot sells: Inicio and the
+ * financed-emissions (PCAF) module. Figures are illustrative and consistent:
+ * the register rows add up to the portfolio total.
  */
 
-type View = 'inicio' | 'operativo' | 'pcaf'
+type View = 'inicio' | 'pcaf' | 'registro'
 
-/* Same order as the platform's rail: the shell opens on Inicio. */
-const NEXT_VIEW: Record<View, View> = { inicio: 'operativo', operativo: 'pcaf', pcaf: 'inicio' }
+/* Same order as the platform: home, the PCAF product picker, then one product's register. */
+const NEXT_VIEW: Record<View, View> = { inicio: 'pcaf', pcaf: 'registro', registro: 'inicio' }
 
-const SCOPE_TOTALS = [412.8, 301.5, 570.3]
-const TOTAL = 1284.6
-const MONTHLY = [
-  [44.1, 42.7, 47.9, 45.2, 46.8, 48.3, 45.6, 46.0, 46.2],
-  [42.8, 41.5, 37.9, 31.2, 27.4, 25.1, 26.3, 30.1, 39.2],
-  [52.4, 58.9, 71.2, 63.5, 55.1, 68.7, 62.0, 74.8, 63.7],
-]
-const AXIS_MAX = 160
-const CATEGORY_VALUES = [481.9, 232.4, 214.7, 355.6]
-/* Top three branches only, so they need not add up to the total */
-const BRANCH_VALUES = [512.3, 298.7, 204.1]
-
-/* Chart palette, as in the platform's DashboardConfig */
-const SCOPE_COLORS = ['var(--color-r0-primary-light)', 'var(--color-r0-accent)', 'var(--color-r0-accent-light)']
-const CATEGORY_COLORS = ['var(--color-r0-sun)', 'var(--color-r0-primary-light)', 'var(--color-r0-accent)', 'var(--color-r0-accent-light)']
-
-/* Time on each tab while the shell plays by itself; a click pauses the cycle for a while. */
-const VIEW_MS: Record<View, number> = { inicio: 3200, operativo: 4200, pcaf: 4000 }
+/* Time on each screen while the shell plays by itself; a click pauses the cycle for a while. */
+const VIEW_MS: Record<View, number> = { inicio: 3200, pcaf: 3800, registro: 4800 }
 const RESUME_MS = 12000
+
+/* Business-loan register (illustrative). */
+const REGISTER = [
+  { id: 'PC-0142', currency: 'USD', amount: 2_400_000, tco2e: 602.7, dqs: 2 },
+  { id: 'PC-0157', currency: 'USD', amount: 5_100_000, tco2e: 1318.4, dqs: 3 },
+  { id: 'PC-0163', currency: 'PYG', amount: 9_800_000_000, tco2e: 214.9, dqs: 4 },
+  { id: 'PC-0171', currency: 'USD', amount: 1_250_000, tco2e: 96.3, dqs: 5 },
+  { id: 'PC-0188', currency: 'USD', amount: 3_700_000, tco2e: 41.8, dqs: 2 },
+  { id: 'PC-0192', currency: 'USD', amount: 7_900_000, tco2e: 2106.5, dqs: 1 },
+]
+const REGISTER_TOTAL = 4380.6
+/* Financed emissions per score (sums of the rows above), for the mobile summary. */
+const BY_SCORE = [2106.5, 644.5, 1318.4, 214.9, 96.3]
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function ScoreBadge({ score, label }: { score: number; label: string }) {
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium text-white"
+      style={{ backgroundColor: dqsColor(score) }}
+    >
+      {label} {score}
+    </span>
+  )
 }
 
 /* ─── Shell pieces ──────────────────────────────────────────────────── */
@@ -85,39 +87,35 @@ interface RailTileProps {
   label: string
   active?: boolean
   onClick?: () => void
-  /** While autoplaying, the active tile shows how long until the next tab. */
+  /** While autoplaying, the active tile shows how long until the next screen. */
   progressMs?: number
+  /** Restarts the progress bar when the screen changes under the same tile. */
+  progressKey?: string
 }
 
-function RailTile({ icon: Icon, label, active, onClick, progressMs }: RailTileProps) {
-  const className = cn(
-    'relative flex size-[58px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg border px-0.5 transition-all duration-200',
-    active
-      ? 'border-transparent bg-r0-accent text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.5)]'
-      : 'border-r0-border bg-r0-surface text-r0-text-secondary',
-    onClick && !active && 'cursor-pointer hover:border-r0-accent/60 hover:text-r0-text hover:shadow-sm',
-  )
-  const content = (
-    <>
+function RailTile({ icon: Icon, label, active, onClick, progressMs, progressKey }: RailTileProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        'relative flex size-[58px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg border px-0.5 transition-all duration-200',
+        active
+          ? 'border-transparent bg-r0-accent text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.5)]'
+          : 'cursor-pointer border-r0-border bg-r0-surface text-r0-text-secondary hover:border-r0-accent/60 hover:text-r0-text hover:shadow-sm',
+      )}
+    >
       <Icon className="size-[22px]" strokeWidth={1.8} />
       <span className={cn('w-full text-center text-[8.5px] leading-[1.1] tracking-tight', active ? 'font-semibold' : 'font-medium')}>
         {label}
       </span>
       {active && progressMs ? (
         <span aria-hidden className="absolute inset-x-2 bottom-1 h-[2px] overflow-hidden rounded-full bg-white/30">
-          <span className="anim-progress block h-full origin-left bg-white" style={{ animationDuration: `${progressMs}ms` }} />
+          <span key={progressKey} className="anim-progress block h-full origin-left bg-white" style={{ animationDuration: `${progressMs}ms` }} />
         </span>
       ) : null}
-    </>
-  )
-  return onClick ? (
-    <button type="button" onClick={onClick} aria-pressed={active} className={className}>
-      {content}
     </button>
-  ) : (
-    <div className={className} aria-hidden>
-      {content}
-    </div>
   )
 }
 
@@ -186,138 +184,25 @@ function TopBar({ bank }: { bank: string }) {
   )
 }
 
-/* ─── Views ─────────────────────────────────────────────────────────── */
-
-function OperationalView() {
-  const { t, locale } = useLanguage()
-  const m = t.mockup.operational
-  const unit = t.mockup.unit
-
+/** The platform's ShellBackdrop: the leaf landscape masked in from the top. */
+function Backdrop({ position }: { position: string }) {
   return (
-    <div className="anim-rail-in flex h-full flex-col gap-3 overflow-hidden bg-r0-bg p-4 lg:p-5">
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="font-sans text-[15px] font-bold uppercase tracking-wide text-[#9b9b9b]">{m.heading}</h3>
-        <div className="flex items-center gap-2">
-          <span className="hidden items-center gap-1.5 rounded-lg border border-gray-300 bg-white py-1.5 pl-2.5 pr-2 text-[11px] text-gray-700 xl:flex">
-            {m.period}
-            <ChevronDown className="size-3 text-gray-400" />
-          </span>
-          <span className="flex rounded-lg bg-gray-200 p-0.5 text-[11px]">
-            <span className="rounded-md bg-white px-2.5 py-1 font-medium text-r0-text shadow-sm">{m.toggle[0]}</span>
-            <span className="px-2.5 py-1 font-medium text-r0-text-secondary">{m.toggle[1]}</span>
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-2.5">
-        {[{ label: m.total, value: TOTAL, color: 'var(--color-r0-primary)' }, ...m.scopes.map((label, i) => ({ label, value: SCOPE_TOTALS[i], color: SCOPE_COLORS[i] }))].map(
-          (kpi) => (
-            <div key={kpi.label} className="rounded-lg border border-r0-border bg-white px-3 py-2.5">
-              <p className="flex items-center gap-1.5 truncate text-[10px] font-medium uppercase tracking-wide text-r0-text-secondary">
-                <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: kpi.color }} />
-                {kpi.label}
-              </p>
-              <p className="mt-1 font-mono text-[15px] font-semibold text-r0-text lg:text-base">
-                {formatNumber(kpi.value, locale)}
-                <span className="ml-1 font-sans text-[10px] font-normal text-r0-text-muted">{unit}</span>
-              </p>
-            </div>
-          ),
-        )}
-      </div>
-
-      <div className="grid min-h-0 flex-1 grid-cols-5 gap-2.5">
-        <div className="col-span-3 flex min-h-0 flex-col rounded-lg border border-r0-border bg-white p-3.5">
-          <div className="mb-2 flex items-center justify-between">
-            <p className="text-[12px] font-semibold text-gray-800">{m.chartTitle}</p>
-            <div className="flex gap-2.5">
-              {m.scopes.map((s, i) => (
-                <span key={s} className="flex items-center gap-1 text-[10px] text-r0-text-secondary">
-                  <span className="size-2 rounded-[2px]" style={{ backgroundColor: SCOPE_COLORS[i] }} />
-                  <span className="hidden xl:inline">{s}</span>
-                  <span className="xl:hidden">{s.slice(0, 1)}{i + 1}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="flex min-h-0 flex-1 flex-col pl-7 pt-1.5">
-            <div className="relative min-h-0 flex-1">
-              {[0, 40, 80, 120, 160].map((tick) => (
-                <div
-                  key={tick}
-                  className="absolute inset-x-0 border-t border-dashed border-gray-100"
-                  style={{ bottom: `${(tick / AXIS_MAX) * 100}%` }}
-                >
-                  <span className="absolute -left-7 w-6 -translate-y-1/2 text-right font-mono text-[9px] text-r0-text-muted">{tick}</span>
-                </div>
-              ))}
-              <div className="relative flex h-full items-end gap-2">
-                {m.months.map((month, mi) => (
-                  <div
-                    key={month}
-                    className="anim-bar flex flex-1 flex-col-reverse overflow-hidden rounded-t-[3px]"
-                    style={{
-                      height: `${((MONTHLY[0][mi] + MONTHLY[1][mi] + MONTHLY[2][mi]) / AXIS_MAX) * 100}%`,
-                      animationDelay: `${mi * 45}ms`,
-                    }}
-                  >
-                    {MONTHLY.map((series, si) => (
-                      <div key={si} style={{ flexGrow: series[mi], backgroundColor: SCOPE_COLORS[si] }} />
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex gap-2 pt-1">
-              {m.months.map((month) => (
-                <span key={month} className="flex-1 text-center text-[9px] leading-3 text-r0-text-muted">
-                  {month}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="col-span-2 flex min-h-0 flex-col rounded-lg border border-r0-border bg-white p-3.5">
-          <p className="mb-3 text-[12px] font-semibold text-gray-800">{m.breakdownTitle}</p>
-          <div className="flex flex-col gap-2.5">
-            {m.categories.map((label, i) => (
-              <div key={label}>
-                <div className="mb-1 flex items-center justify-between gap-2">
-                  <span className="truncate text-[11.5px] font-semibold text-gray-800">{label}</span>
-                  <span className="shrink-0 font-mono text-[10px] text-gray-700">{formatNumber(CATEGORY_VALUES[i], locale)}</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
-                  <div
-                    className="h-full rounded-full transition-[width] duration-700"
-                    style={{ width: `${(CATEGORY_VALUES[i] / TOTAL) * 100}%`, backgroundColor: CATEGORY_COLORS[i] }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-auto border-t border-r0-border pt-3">
-            <p className="mb-2 text-[12px] font-semibold text-gray-800">{m.branchesTitle}</p>
-            <ol className="space-y-1.5">
-              {m.branches.map((name, i) => (
-                <li key={name} className="flex items-center justify-between gap-2 text-[11px]">
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="flex size-4 shrink-0 items-center justify-center rounded bg-gray-100 font-mono text-[9px] font-semibold text-gray-500">
-                      {i + 1}
-                    </span>
-                    <span className="truncate text-gray-600">{name}</span>
-                  </span>
-                  <span className="shrink-0 font-mono text-[10px] text-gray-700">{formatNumber(BRANCH_VALUES[i], locale)}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div
+      aria-hidden
+      className="absolute inset-0"
+      style={{
+        backgroundImage: "url('/brand/hero-bg-sm.webp')",
+        backgroundSize: 'cover',
+        backgroundPosition: position,
+        opacity: 0.55,
+        maskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
+      }}
+    />
   )
 }
+
+/* ─── Views ─────────────────────────────────────────────────────────── */
 
 function InicioView() {
   const { t } = useLanguage()
@@ -325,19 +210,7 @@ function InicioView() {
 
   return (
     <div className="relative h-full overflow-hidden">
-      {/* ShellBackdrop, parked left as on the platform's home screen */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url('/brand/hero-bg-sm.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: '15% 100%',
-          opacity: 0.6,
-          maskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
-        }}
-      />
+      <Backdrop position="15% 100%" />
       <FlowLines />
       <div className="anim-rail-in relative z-[1] flex h-full items-center justify-center px-8">
         <div className="w-full max-w-md rounded-3xl border border-r0-border bg-r0-surface/85 px-10 py-12 text-center shadow-[0_24px_60px_-30px_rgba(0,0,0,0.45)] backdrop-blur-sm">
@@ -355,29 +228,17 @@ function InicioView() {
   )
 }
 
-function FinancedView() {
+function ProductsView() {
   const { t } = useLanguage()
 
   return (
     <div className="relative h-full overflow-hidden">
-      {/* ShellBackdrop, parked right as on /m/financed */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url('/brand/hero-bg-sm.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: '80% 100%',
-          opacity: 0.55,
-          maskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, black 100%)',
-        }}
-      />
+      <Backdrop position="80% 100%" />
       <FlowLines className="translate-x-1/3" />
       <div className="anim-rail-in relative z-[1] px-5 py-4">
         <p className="mb-2.5 text-[12px] font-medium text-r0-text-secondary">{t.mockup.financed.heading}</p>
         <div className="grid auto-rows-fr grid-cols-3 gap-px overflow-hidden rounded-lg border border-r0-border bg-r0-border">
-          {t.pcaf.classes.map((c) => {
+          {t.product.assetClasses.map((c) => {
             const Icon = PCAF_ICONS[c.code]
             return (
               <div key={c.code} className="flex min-h-[84px] flex-col gap-1.5 bg-r0-surface p-3.5">
@@ -395,11 +256,70 @@ function FinancedView() {
   )
 }
 
+function RegisterView() {
+  const { t, locale } = useLanguage()
+  const r = t.mockup.registry
+  const th = 'px-3 py-2.5 text-[9.5px] font-semibold uppercase tracking-wider text-r0-text-secondary'
+
+  return (
+    <div className="anim-rail-in flex h-full flex-col overflow-hidden bg-r0-bg px-5 py-4">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-r0-primary-light">{r.eyebrow}</p>
+      <h3 className="mt-0.5 text-xl font-bold text-r0-text">{r.heading}</h3>
+
+      <div className="mt-3 overflow-hidden rounded-lg border border-r0-border bg-white">
+        <table className="w-full text-[11px]">
+          <thead className="border-b border-r0-border bg-r0-bg/60">
+            <tr>
+              <th className={cn('hidden text-left xl:table-cell', th)}>{r.columns[0]}</th>
+              <th className={cn('text-left', th)}>{r.columns[1]}</th>
+              <th className={cn('hidden text-left lg:table-cell', th)}>{r.columns[2]}</th>
+              <th className={cn('text-right', th)}>{r.columns[4]}</th>
+              <th className={cn('text-right', th)}>{r.columns[5]}</th>
+              <th className={cn('text-center', th)}>{r.columns[6]}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-r0-border">
+            {REGISTER.map((row, i) => (
+              <tr key={row.id}>
+                <td className="hidden px-3 py-2 text-r0-text-secondary xl:table-cell">{r.date}</td>
+                <td className="px-3 py-2 font-medium text-r0-text">{r.clients[i]}</td>
+                <td className="hidden px-3 py-2 font-mono text-[10px] text-r0-text-secondary lg:table-cell">{row.id}</td>
+                <td className="px-3 py-2 text-right font-mono text-[10.5px] text-r0-text">
+                  <span className="mr-1 text-r0-text-muted">{row.currency}</span>
+                  {formatNumber(row.amount, locale, 0)}
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-[10.5px] text-r0-text">
+                  {formatNumber(row.tco2e, locale)} <span className="font-sans text-[9px] text-r0-text-muted">{t.mockup.unit}</span>
+                </td>
+                <td className="px-3 py-2 text-center">
+                  <ScoreBadge score={row.dqs} label={r.score} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot className="border-t border-r0-border bg-r0-bg/60">
+            <tr>
+              <td className="hidden xl:table-cell" />
+              <td className="px-3 py-2.5 text-[10.5px] font-semibold text-r0-text">{r.total}</td>
+              <td className="hidden lg:table-cell" />
+              <td />
+              <td className="px-3 py-2.5 text-right font-mono text-[11px] font-semibold text-r0-text">
+                {formatNumber(REGISTER_TOTAL, locale)} <span className="font-sans text-[9px] font-normal text-r0-text-muted">{t.mockup.unit}</span>
+              </td>
+              <td />
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Mobile shell (the platform renders a header + module list under lg) ── */
 
 function MobileShell() {
   const { t, locale } = useLanguage()
-  const icons = [Truck, BriefcaseBusiness, CalendarDays]
+  const m = t.mockup.mobile
 
   return (
     <div className="bg-r0-bg">
@@ -412,38 +332,48 @@ function MobileShell() {
       </div>
       <div className="flex flex-col gap-2.5 px-4 py-5">
         <div className="rounded-xl border border-r0-border bg-white p-4">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-r0-text-secondary">{t.mockup.operational.total}</p>
+          <p className="text-[10px] font-medium uppercase tracking-wide text-r0-text-secondary">{m.total}</p>
           <p className="mt-1 font-mono text-xl font-semibold text-r0-text">
-            {formatNumber(TOTAL, locale)} <span className="font-sans text-xs font-normal text-r0-text-muted">{t.mockup.unit}</span>
+            {formatNumber(REGISTER_TOTAL, locale)} <span className="font-sans text-xs font-normal text-r0-text-muted">{t.mockup.unit}</span>
           </p>
-          <div className="mt-3 flex h-2 overflow-hidden rounded-full">
-            {SCOPE_TOTALS.map((v, i) => (
-              <span key={i} style={{ flexGrow: v, backgroundColor: SCOPE_COLORS[i] }} />
+          <p className="mt-3 text-[10px] text-r0-text-secondary">{m.byScore}</p>
+          <div className="mt-1.5 flex h-2 overflow-hidden rounded-full">
+            {BY_SCORE.map((v, i) => (
+              <span key={i} style={{ flexGrow: v, backgroundColor: dqsColor(i + 1) }} />
             ))}
           </div>
           <div className="mt-2 flex justify-between text-[10px] text-r0-text-secondary">
-            {t.mockup.operational.scopes.map((s, i) => (
-              <span key={s} className="flex items-center gap-1">
-                <span className="size-1.5 rounded-full" style={{ backgroundColor: SCOPE_COLORS[i] }} />
-                {s}
+            {BY_SCORE.map((_, i) => (
+              <span key={i} className="flex items-center gap-1">
+                <span className="size-1.5 rounded-full" style={{ backgroundColor: dqsColor(i + 1) }} />
+                {i + 1}
               </span>
             ))}
           </div>
         </div>
-        {t.mockup.mobileModules.map((mod, i) => {
-          const Icon = icons[i]
-          return (
-            <div key={mod.name} className="flex items-center gap-4 rounded-xl border border-r0-border bg-r0-surface px-4 py-3.5">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-r0-primary/10">
-                <Icon className="size-5 text-r0-primary-light" strokeWidth={1.8} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-r0-text">{mod.name}</span>
-                <span className="block truncate text-xs text-r0-text-secondary">{mod.desc}</span>
-              </span>
-            </div>
-          )
-        })}
+
+        <div className="flex items-center gap-4 rounded-xl border border-r0-border bg-r0-surface px-4 py-3.5">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-r0-primary/10">
+            <BriefcaseBusiness className="size-5 text-r0-primary-light" strokeWidth={1.8} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-r0-text">{m.module.name}</span>
+            <span className="block truncate text-xs text-r0-text-secondary">{m.module.desc}</span>
+          </span>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-r0-border bg-white">
+          <p className="border-b border-r0-border px-4 py-2.5 text-[11px] font-medium text-r0-text-secondary">{m.classesTitle}</p>
+          {t.product.assetClasses.slice(2, 7).map((c) => {
+            const Icon = PCAF_ICONS[c.code]
+            return (
+              <div key={c.code} className="flex items-center justify-between gap-3 border-b border-r0-border px-4 py-2.5 last:border-b-0">
+                <span className="text-[13px] font-medium text-r0-text">{c.name}</span>
+                <Icon className="size-4 shrink-0 text-r0-primary" strokeWidth={1.7} />
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -472,17 +402,16 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
     setPausedAt(Date.now())
     setView(next)
   }
-  const progress = (v: View) => (playing && view === v ? VIEW_MS[v] : undefined)
 
-  const op = t.mockup.operational
+  const onPcaf = view !== 'inicio'
   const fin = t.mockup.financed
-  const tools: Tool[] =
+  const reg = t.mockup.registry
+  const sidebar: { title: string; tools: Tool[] } =
     view === 'inicio'
-      ? [{ icon: LayoutGrid, name: t.mockup.inicio.tool, active: true }]
-      : view === 'operativo'
-        ? [LayoutDashboard, Table2, ClipboardList, Building].map((icon, i) => ({ icon, name: op.tools[i], active: i === 0 }))
-        : [Users, Building2, Globe].map((icon, i) => ({ icon, name: fin.tools[i], disabled: true }))
-  const title = view === 'inicio' ? t.mockup.inicio.title : view === 'operativo' ? op.title : fin.title
+      ? { title: t.mockup.inicio.title, tools: [{ icon: LayoutGrid, name: t.mockup.inicio.tool, active: true }] }
+      : view === 'pcaf'
+        ? { title: fin.title, tools: [Users, Building2, Globe].map((icon, i) => ({ icon, name: fin.tools[i], disabled: true })) }
+        : { title: fin.title, tools: [{ icon: Building2, name: reg.tools[0] }, { icon: Table2, name: reg.tools[1], active: true }] }
 
   return (
     <div
@@ -502,22 +431,34 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
           </div>
           <div className="w-full border-t border-r0-border" />
           <div className="flex flex-1 flex-col items-center gap-1.5 py-2.5">
-            <RailTile icon={House} label={t.mockup.rail.inicio} active={view === 'inicio'} onClick={() => pick('inicio')} progressMs={progress('inicio')} />
-            <RailTile icon={Truck} label={t.mockup.rail.operativo} active={view === 'operativo'} onClick={() => pick('operativo')} progressMs={progress('operativo')} />
-            <RailTile icon={BriefcaseBusiness} label={t.mockup.rail.pcaf} active={view === 'pcaf'} onClick={() => pick('pcaf')} progressMs={progress('pcaf')} />
-            <RailTile icon={CalendarDays} label={t.mockup.rail.eventos} />
+            <RailTile
+              icon={House}
+              label={t.mockup.rail.inicio}
+              active={view === 'inicio'}
+              onClick={() => pick('inicio')}
+              progressMs={playing && view === 'inicio' ? VIEW_MS.inicio : undefined}
+              progressKey={view}
+            />
+            <RailTile
+              icon={BriefcaseBusiness}
+              label={t.mockup.rail.pcaf}
+              active={onPcaf}
+              onClick={() => pick('pcaf')}
+              progressMs={playing && onPcaf ? VIEW_MS[view] : undefined}
+              progressKey={view}
+            />
           </div>
           <div className="flex w-full justify-center border-t border-r0-border py-3">
             <span className="size-7 rounded-full bg-gradient-to-br from-r0-mint to-r0-accent ring-2 ring-black/10" />
           </div>
         </nav>
 
-        <Sidebar title={title} tools={tools} swapKey={view} />
+        <Sidebar title={sidebar.title} tools={sidebar.tools} swapKey={view} />
 
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar bank={t.mockup.bank} />
           <div className="relative min-h-0 flex-1" key={view}>
-            {view === 'inicio' ? <InicioView /> : view === 'operativo' ? <OperationalView /> : <FinancedView />}
+            {view === 'inicio' ? <InicioView /> : view === 'pcaf' ? <ProductsView /> : <RegisterView />}
           </div>
         </div>
       </div>

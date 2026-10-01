@@ -21,3 +21,14 @@ export function formatNumber(value: number, locale: 'es' | 'en', decimals = 1) {
   const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, group)
   return dec ? `${grouped}${point}${dec}` : grouped
 }
+
+/**
+ * Data Quality Score colours, exactly as the platform's DqsBadge
+ * (R0_PLATFORM features/financed/constants.ts): 1–2 brand greens, then
+ * yellow, orange and red as the data gets weaker.
+ */
+export const DQS_HEX = ['#1b4332', '#2d6a4f', '#ca8a04', '#ea580c', '#dc2626'] as const
+
+export function dqsColor(score: number) {
+  return DQS_HEX[Math.min(Math.max(score, 1), 5) - 1]
+}
