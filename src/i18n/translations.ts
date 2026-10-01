@@ -1,304 +1,429 @@
 export type Locale = 'es' | 'en'
 
-interface ProblemItem {
-  title: string
-  desc: string
-}
-
-export interface TranslationStrings {
+const es = {
+  meta: {
+    title: 'RastroCero | Contabilidad de carbono para el sector financiero',
+  },
   nav: {
-    inicio: string
-    plataforma: string
-    tecnologia: string
-    contacto: string
-    acceder: string
-  }
+    platform: 'Plataforma',
+    pcaf: 'PCAF',
+    process: 'Cómo funciona',
+    security: 'Seguridad',
+    demo: 'Solicitar demo',
+    openMenu: 'Abrir menú',
+    closeMenu: 'Cerrar menú',
+    switchLang: 'Switch to English',
+  },
   hero: {
-    badge: string
-    headline1: string
-    headline2: string
-    headline3: string
-    sub: string
-    cta: string
-  }
-  problem: {
-    title1: string
-    title2: string
-    intro: string
-    items: ProblemItem[]
-    cardDebit: string
-  }
-  platform: {
-    sectionLabel: string
-    mainTitle1: string
-    mainTitle2: string
-    s1: {
-      title: string
-      text: string
-      link: string
-      inputs: string[]
-      output: string
-      outputSub: string
-    }
-    s2: {
-      title: string
-      text: string
-      link: string
-      nodes: {
-        operaciones: string
-        cadena: string
-        finanzas: string
-        terceros: string
-        actividad: string
-      }
-    }
-    s3: {
-      title: string
-      text: string
-      link: string
-      status: string
-    }
-  }
-  contact: {
-    sectionLabel: string
-    title1: string
-    title2: string
-    text: string
-    cta: string
-    emailLabel: string
-  }
+    eyebrow: 'Contabilidad de carbono para el sector financiero',
+    title1: 'Medí la huella de tu banco,',
+    title2: 'de la oficina a la cartera.',
+    sub: 'Alcances 1, 2 y 3 del GHG Protocol y emisiones financiadas según PCAF, con trazabilidad completa y en tu propia infraestructura.',
+    ctaPrimary: 'Solicitar una demo',
+    ctaSecondary: 'Conocer la plataforma',
+  },
+  productView: {
+    eyebrow: 'La plataforma',
+    text: 'Un solo sistema para las emisiones de tus sucursales y las de tu cartera, con cada cálculo guardado junto al dato y al factor que lo originan.',
+  },
+  mockup: {
+    url: 'rastrocero.tubanco.com',
+    bank: 'Tu Banco',
+    rail: { inicio: 'Inicio', operativo: 'Operativo', pcaf: 'PCAF', eventos: 'Eventos' },
+    inicio: { title: 'Inicio', tool: 'Resumen general', kicker: 'RastroCero para', sub: 'Contabilidad de carbono · 2026' },
+    unit: 'tCO₂e',
+    operational: {
+      title: 'Módulo Operacional',
+      tools: ['Resumen', 'Registros', 'Formularios', 'Sucursal'],
+      heading: 'Huella de carbono',
+      period: 'Ene – Sep 2026',
+      total: 'Emisiones totales',
+      toggle: ['Alcance', 'Categoría'],
+      scopes: ['Alcance 1', 'Alcance 2', 'Alcance 3'],
+      chartTitle: 'Emisiones por mes',
+      months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'],
+      breakdownTitle: 'Por categoría',
+      categories: ['Energía', 'Flota Vehicular', 'Movilidad', 'Bienes y Servicios'],
+      branchesTitle: 'Por sucursal',
+      branches: ['Casa Central', 'Sucursal Norte', 'Sucursal Sur'],
+    },
+    financed: {
+      title: 'Módulo Financiado',
+      tools: ['Individuos', 'Entidades', 'Naciones y Territorios'],
+      heading: 'Productos Disponibles',
+    },
+    mobileModules: [
+      { name: 'Módulo Operacional', desc: 'Alcances 1, 2 y 3 del GHG Protocol' },
+      { name: 'Módulo Financiado', desc: 'Emisiones financiadas según PCAF' },
+      { name: 'Eventos', desc: 'Huella de eventos corporativos' },
+    ],
+  },
+  challenge: {
+    eyebrow: 'Contexto',
+    title1: 'La huella de un banco',
+    title2: 'está en su cartera.',
+    intro: 'Las emisiones que una institución financia superan por mucho a las que genera en sus oficinas. Medirlas exige datos de miles de clientes, metodologías específicas y un nivel de detalle que las planillas no sostienen.',
+    vizOperational: 'Emisiones operativas',
+    vizFinanced: 'Emisiones financiadas',
+    statValue: '700×',
+    statText: 'Las emisiones financiadas de las instituciones financieras son, en promedio, más de 700 veces mayores que sus emisiones directas.',
+    statSource: 'Fuente: CDP, 2020.',
+    items: [
+      { title: 'Datos dispersos', text: 'La información vive en el core bancario, en planillas y en reportes de clientes, y cada exposición pide su propio método de cálculo.' },
+      { title: 'Cifras que se piden todos los años', text: 'Reguladores, casas matrices e inversores esperan números comparables, período tras período.' },
+      { title: 'Auditoría sin atajos', text: 'Cada número reportado tiene que poder explicarse: de dónde viene, qué factor usó y quién lo cargó.' },
+    ],
+  },
+  operational: {
+    section: {
+      eyebrow: 'Dos módulos',
+      title1: 'Lo que emite tu banco',
+      title2: 'y lo que financia.',
+    },
+    label: 'Módulo Operativo',
+    title: 'Tu huella directa, sucursal por sucursal.',
+    text: 'Cada consumo se registra por sucursal y activo, aplica su factor de emisión y queda clasificado por alcance.',
+    vizTitle: 'Fuentes por alcance',
+    vizHint: 'GHG Protocol',
+    scopes: [
+      { name: 'Alcance 1', sources: ['Combustión', 'Flota propia'] },
+      { name: 'Alcance 2', sources: ['Electricidad'] },
+      { name: 'Alcance 3', sources: ['Viajes de negocios', 'Traslado del personal', 'Bienes y servicios'] },
+    ],
+    footLabel: 'Paneles',
+    footText: 'Por alcance, categoría, sucursal y período.',
+  },
+  pcaf: {
+    label: 'Módulo Financiado',
+    tag: 'PCAF',
+    title: 'Emisiones financiadas, clase por clase.',
+    text: 'Cada exposición recibe su factor de atribución, la opción de cálculo PCAF que permiten sus datos y un puntaje de calidad.',
+    vizTitle: 'Data Quality Score',
+    vizHint: 'De mayor a menor calidad',
+    dqs: ['Emisiones verificadas', 'Emisiones reportadas', 'Datos de actividad', 'Datos de ingresos', 'Promedios sectoriales'],
+    classesLabel: '9 clases de activo',
+    classes: [
+      { code: 'acciones', name: 'Acciones cotizadas', desc: 'Participaciones accionarias en mercados públicos' },
+      { code: 'bonos', name: 'Bonos corporativos', desc: 'Bonos corporativos cotizados' },
+      { code: 'prestamos', name: 'Préstamos comerciales', desc: 'Préstamos a empresas y capital no cotizado' },
+      { code: 'proyectos', name: 'Financiación de proyectos', desc: 'Proyectos de infraestructura' },
+      { code: 'inmobiliaria', name: 'Inmobiliaria comercial', desc: 'Activos inmobiliarios comerciales' },
+      { code: 'hipotecas', name: 'Hipotecas', desc: 'Préstamos hipotecarios residenciales' },
+      { code: 'vehiculos', name: 'Vehículos motorizados', desc: 'Préstamos para vehículos' },
+      { code: 'soberana', name: 'Deuda soberana', desc: 'Deuda soberana nacional' },
+      { code: 'subsoberana', name: 'Deuda subsoberana', desc: 'Deuda subsoberana y municipal' },
+    ],
+  },
+  process: {
+    eyebrow: 'Cómo funciona',
+    title1: 'Cargás el dato.',
+    title2: 'Sale un número que podés defender.',
+    steps: [
+      { title: 'Cargá', text: 'Formularios guiados por categoría o planillas XLSX para cargas masivas de cartera.' },
+      { title: 'Calculá', text: 'El motor aplica el factor de emisión y el método PCAF que corresponde. Todo cálculo ocurre en el servidor.' },
+      { title: 'Evaluá', text: 'Cada exposición recibe su Data Quality Score, para saber dónde conviene mejorar la información.' },
+      { title: 'Reportá', text: 'Paneles por alcance, sucursal, clase de activo y período, con el detalle completo de cada registro.' },
+    ],
+  },
+  security: {
+    eyebrow: 'Trazabilidad y seguridad',
+    title1: 'Cada número,',
+    title2: 'con su historia.',
+    text: 'RastroCero guarda el dato original y una copia inmutable del factor aplicado en cada cálculo. Si algo cambia, el registro no se pisa: se anula y se reemplaza, con motivo y usuario.',
+    features: [
+      { title: 'Roles y permisos', text: 'Acceso por rol y por módulo, administrado por cada institución.' },
+      { title: 'Aislamiento de datos', text: 'Cada institución accede solo a sus propios datos.' },
+      { title: 'On-premise', text: 'Se despliega con contenedores en la infraestructura del banco. Los datos no salen de tu red.' },
+      { title: 'Con tu marca', text: 'Logo y color institucional configurables para cada organización.' },
+    ],
+    record: {
+      title: 'Detalle del registro',
+      status: 'Vigente',
+      voided: 'Anulado',
+      replacesLabel: 'Reemplaza a',
+      replacesId: 'R-2291',
+      rows: [
+        ['Alcance', 'Alcance 1 · Combustión'],
+        ['Sucursal', 'Casa Central'],
+        ['Activo', 'Generador de respaldo A'],
+        ['Cantidad', '1.700 L'],
+        ['Fecha', '12/08/2026'],
+      ],
+      factorName: 'Diésel (mezcla promedio) – litros [directo]',
+      result: 'Resultado',
+      resultValue: '4,27',
+    },
+  },
+  cta: {
+    title1: 'Veamos tu cartera',
+    title2: 'en RastroCero.',
+    text: 'Te mostramos la plataforma con datos parecidos a los tuyos.',
+    primary: 'Solicitar una demo',
+    emailLabel: 'O escribinos a',
+  },
   footer: {
-    description: string
-    platformTitle: string
-    platformLinks: string[]
-    companyTitle: string
-    companyLinks: string[]
-    legalTitle: string
-    legalLinks: string[]
-    copy: string
-  }
+    tagline: 'Contabilidad de carbono para instituciones financieras: emisiones operativas y financiadas, con trazabilidad de auditoría.',
+    platformTitle: 'Plataforma',
+    platformLinks: [
+      { label: 'Módulo Operativo', href: '/#operativo' },
+      { label: 'Módulo Financiado · PCAF', href: '/#pcaf' },
+      { label: 'Cómo funciona', href: '/#proceso' },
+      { label: 'Trazabilidad y seguridad', href: '/#seguridad' },
+    ],
+    contactTitle: 'Contacto',
+    demo: 'Solicitar una demo',
+    copy: '© 2026 RastroCero. Todos los derechos reservados.',
+  },
   contactPage: {
-    title: string
-    basicInfo: string
-    firstName: string
-    lastName: string
-    role: string
-    company: string
-    website: string
-    companyType: string
-    country: string
-    email: string
-    helpTitle: string
-    message: string
-    messagePlaceholder: string
-    submit: string
-    sending: string
-    success: string
-    error: string
-    required: string
-    companyTypes: string[]
-  }
+    eyebrow: 'Contacto',
+    title: 'Solicitá una demo',
+    intro: 'Contanos sobre tu institución y te contactamos para coordinar una presentación de la plataforma.',
+    expectTitle: 'Qué vas a ver',
+    expect: [
+      'Recorrido por los módulos Operativo y PCAF',
+      'Revisión de tus fuentes de datos y clases de activo',
+      'Opciones de despliegue en tu infraestructura',
+    ],
+    emailTitle: 'Correo directo',
+    basicInfo: 'Tus datos',
+    firstName: 'Nombre',
+    lastName: 'Apellido',
+    role: 'Cargo',
+    company: 'Institución',
+    website: 'Sitio web',
+    companyType: 'Tipo de institución',
+    country: 'País',
+    email: 'Correo corporativo',
+    select: 'Seleccioná una opción',
+    companyTypes: ['Banco', 'Financiera', 'Cooperativa', 'Aseguradora', 'Administradora de fondos', 'Otra organización'],
+    helpTitle: '¿Qué te gustaría ver?',
+    message: 'Mensaje',
+    messagePlaceholder: 'Por ejemplo: clases de activo de tu cartera, alcance del inventario operativo o plazos de reporte.',
+    required: 'Obligatorio',
+    submit: 'Enviar solicitud',
+    sending: 'Enviando…',
+    successTitle: '¡Gracias!',
+    success: 'Recibimos tu mensaje. Te vamos a contactar a la brevedad.',
+    error: 'No pudimos enviar el mensaje. Probá de nuevo o escribinos directamente.',
+    back: 'Volver al inicio',
+    privacy: 'Usamos estos datos solo para responder a tu solicitud.',
+    subject: 'Solicitud de demo',
+  },
 }
 
-export const translations: Record<Locale, TranslationStrings> = {
-  es: {
-    nav: {
-      inicio: 'Inicio',
-      plataforma: 'Plataforma',
-      tecnologia: 'Tecnología',
-      contacto: 'Contacto',
-      acceder: 'Contactanos',
+export type Dict = typeof es
+
+const en: Dict = {
+  meta: {
+    title: 'RastroCero | Carbon accounting for financial institutions',
+  },
+  nav: {
+    platform: 'Platform',
+    pcaf: 'PCAF',
+    process: 'How it works',
+    security: 'Security',
+    demo: 'Request a demo',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    switchLang: 'Cambiar a español',
+  },
+  hero: {
+    eyebrow: 'Carbon accounting for financial institutions',
+    title1: "Measure your bank's footprint,",
+    title2: 'from the office to the portfolio.',
+    sub: 'GHG Protocol Scope 1, 2 and 3 and PCAF financed emissions, fully traceable and running on your own infrastructure.',
+    ctaPrimary: 'Request a demo',
+    ctaSecondary: 'Explore the platform',
+  },
+  productView: {
+    eyebrow: 'The platform',
+    text: 'One system for the emissions of your branches and of your portfolio, with every calculation stored next to the input and the factor behind it.',
+  },
+  mockup: {
+    url: 'rastrocero.yourbank.com',
+    bank: 'Your Bank',
+    rail: { inicio: 'Home', operativo: 'Operational', pcaf: 'PCAF', eventos: 'Events' },
+    inicio: { title: 'Home', tool: 'Overview', kicker: 'RastroCero for', sub: 'Carbon accounting · 2026' },
+    unit: 'tCO₂e',
+    operational: {
+      title: 'Operational Module',
+      tools: ['Summary', 'Records', 'Forms', 'Branch'],
+      heading: 'Carbon footprint',
+      period: 'Jan – Sep 2026',
+      total: 'Total emissions',
+      toggle: ['Scope', 'Category'],
+      scopes: ['Scope 1', 'Scope 2', 'Scope 3'],
+      chartTitle: 'Emissions by month',
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      breakdownTitle: 'By category',
+      categories: ['Energy', 'Vehicle Fleet', 'Mobility', 'Goods & Services'],
+      branchesTitle: 'By branch',
+      branches: ['Head Office', 'North Branch', 'South Branch'],
     },
-    hero: {
-      badge: 'Climate Intelligence Platform',
-      headline1: 'Inteligencia',
-      headline2: 'Climática.',
-      headline3: 'Decisiones Reales.',
-      sub: 'Transformamos datos de actividad real en información climática clara, confiable y utilizable para tomar mejores decisiones.',
-      cta: 'VER TECNOLOGÍA',
+    financed: {
+      title: 'Financed Module',
+      tools: ['Individuals', 'Entities', 'Nations & Territories'],
+      heading: 'Available Products',
     },
-    problem: {
-      title1: 'El desafío de medir',
-      title2: 'impacto climático.',
-      intro: 'Medir el impacto climático sigue siendo un problema complejo para las organizaciones.',
-      items: [
-        { title: 'Datos dispersos', desc: 'Los datos suelen estar dispersos, incompletos o desconectados del negocio.' },
-        { title: 'Múltiples fuentes', desc: 'El impacto climático no proviene de una sola fuente, sino de múltiples actividades y decisiones.' },
-        { title: 'Información fragmentada', desc: 'La información suele estar fragmentada entre distintos sistemas y áreas.' },
-        { title: 'De la medición a la acción', desc: 'Medir no siempre significa poder analizar, comparar o actuar.' },
-        { title: 'Exigencias cambiantes', desc: 'Las exigencias externas y los objetivos internos evolucionan más rápido que las capacidades actuales.' },
+    mobileModules: [
+      { name: 'Operational Module', desc: 'GHG Protocol Scope 1, 2 and 3' },
+      { name: 'Financed Module', desc: 'PCAF financed emissions' },
+      { name: 'Events', desc: 'Corporate event footprint' },
+    ],
+  },
+  challenge: {
+    eyebrow: 'Context',
+    title1: "A bank's footprint",
+    title2: 'lives in its portfolio.',
+    intro: 'The emissions an institution finances far exceed those it produces in its own offices. Measuring them takes data from thousands of clients, specific methodologies and a level of detail spreadsheets cannot sustain.',
+    vizOperational: 'Operational emissions',
+    vizFinanced: 'Financed emissions',
+    statValue: '700×',
+    statText: "Financial institutions' financed emissions are, on average, over 700 times larger than their direct emissions.",
+    statSource: 'Source: CDP, 2020.',
+    items: [
+      { title: 'Scattered data', text: 'Information lives in the core banking system, in spreadsheets and in client reports, and every exposure needs its own calculation method.' },
+      { title: 'Figures requested every year', text: 'Regulators, parent companies and investors expect comparable numbers, period after period.' },
+      { title: 'No shortcuts for audit', text: 'Every reported number must be explainable: where it came from, which factor it used and who entered it.' },
+    ],
+  },
+  operational: {
+    section: {
+      eyebrow: 'Two modules',
+      title1: 'What your bank emits',
+      title2: 'and what it finances.',
+    },
+    label: 'Operational Module',
+    title: 'Your direct footprint, branch by branch.',
+    text: 'Each entry is recorded by branch and asset, applies its emission factor and is classified by scope.',
+    vizTitle: 'Sources by scope',
+    vizHint: 'GHG Protocol',
+    scopes: [
+      { name: 'Scope 1', sources: ['Combustion', 'Own fleet'] },
+      { name: 'Scope 2', sources: ['Electricity'] },
+      { name: 'Scope 3', sources: ['Business travel', 'Employee commuting', 'Goods and services'] },
+    ],
+    footLabel: 'Dashboards',
+    footText: 'By scope, category, branch and period.',
+  },
+  pcaf: {
+    label: 'Financed Module',
+    tag: 'PCAF',
+    title: 'Financed emissions, asset class by asset class.',
+    text: 'Each exposure gets its attribution factor, the PCAF calculation option its data allows and a data quality score.',
+    vizTitle: 'Data Quality Score',
+    vizHint: 'From highest to lowest quality',
+    dqs: ['Verified emissions', 'Reported emissions', 'Activity data', 'Revenue data', 'Sector averages'],
+    classesLabel: '9 asset classes',
+    classes: [
+      { code: 'acciones', name: 'Listed equity', desc: 'Shareholdings in public markets' },
+      { code: 'bonos', name: 'Corporate bonds', desc: 'Listed corporate bonds' },
+      { code: 'prestamos', name: 'Business loans', desc: 'Business loans and unlisted equity' },
+      { code: 'proyectos', name: 'Project finance', desc: 'Infrastructure projects' },
+      { code: 'inmobiliaria', name: 'Commercial real estate', desc: 'Commercial property assets' },
+      { code: 'hipotecas', name: 'Mortgages', desc: 'Residential mortgage loans' },
+      { code: 'vehiculos', name: 'Motor vehicle loans', desc: 'Vehicle loans' },
+      { code: 'soberana', name: 'Sovereign debt', desc: 'National sovereign debt' },
+      { code: 'subsoberana', name: 'Sub-sovereign debt', desc: 'Sub-sovereign and municipal debt' },
+    ],
+  },
+  process: {
+    eyebrow: 'How it works',
+    title1: 'You enter the data.',
+    title2: 'Out comes a number you can defend.',
+    steps: [
+      { title: 'Collect', text: 'Guided forms per category, or XLSX workbooks for bulk portfolio uploads.' },
+      { title: 'Calculate', text: 'The engine applies the right emission factor and PCAF method. Every calculation happens on the server.' },
+      { title: 'Assess', text: 'Each exposure gets its Data Quality Score, so you know where better data pays off.' },
+      { title: 'Report', text: 'Dashboards by scope, branch, asset class and period, with full detail for every record.' },
+    ],
+  },
+  security: {
+    eyebrow: 'Traceability & security',
+    title1: 'Every number',
+    title2: 'has a history.',
+    text: 'RastroCero keeps the original input and an immutable copy of the factor applied in every calculation. When something changes, nothing is overwritten: the record is voided and replaced, with a reason and a user.',
+    features: [
+      { title: 'Roles & permissions', text: 'Role- and module-based access, managed by each institution.' },
+      { title: 'Data isolation', text: 'Each institution only ever sees its own data.' },
+      { title: 'On-premise', text: "Deployed with containers on the bank's infrastructure. Your data never leaves your network." },
+      { title: 'Your brand', text: 'Logo and brand colour configurable for each organisation.' },
+    ],
+    record: {
+      title: 'Record detail',
+      status: 'Active',
+      voided: 'Voided',
+      replacesLabel: 'Replaces',
+      replacesId: 'R-2291',
+      rows: [
+        ['Scope', 'Scope 1 · Combustion'],
+        ['Branch', 'Head Office'],
+        ['Asset', 'Backup Generator A'],
+        ['Quantity', '1,700 L'],
+        ['Date', '2026-08-12'],
       ],
-      cardDebit: 'Debit',
-    },
-    platform: {
-      sectionLabel: 'Tecnología',
-      mainTitle1: 'Inteligencia climática',
-      mainTitle2: 'estructurada y accionable.',
-      s1: {
-        title: 'Datos convertidos en inteligencia',
-        text: 'RASTROCERO es una plataforma que convierte distintos tipos de datos organizacionales en información climática estructurada, trazable y reutilizable.',
-        link: 'Conocer más',
-        inputs: ['Energía', 'Flota', 'Compras'],
-        output: 'Datos climáticos estructurados',
-        outputSub: 'trazables · auditables · reutilizables',
-      },
-      s2: {
-        title: 'Diseñada para la complejidad',
-        text: 'La plataforma está diseñada para adaptarse a realidades complejas: desde operaciones internas, procesos productivos y cadenas de suministro, hasta decisiones económicas, relaciones con terceros y flujos de actividad.',
-        link: 'Hablar con el equipo',
-        nodes: {
-          operaciones: 'Operaciones',
-          cadena: 'Cadena de suministro',
-          finanzas: 'Finanzas',
-          terceros: 'Terceros',
-          actividad: 'Actividad',
-        },
-      },
-      s3: {
-        title: 'Visión integral, acción concreta',
-        text: 'En lugar de abordar el impacto climático de forma parcial, RASTROCERO permite construir una visión integral, conectando lo que ocurre dentro de la organización con lo que ocurre a su alrededor, y traduciendo esa complejidad en información accionable.',
-        link: 'Solicitar una demo',
-        status: 'Visión integral activa',
-      },
-    },
-    contact: {
-      sectionLabel: 'Contacto',
-      title1: 'Hablemos sobre',
-      title2: 'tu impacto climático.',
-      text: 'Estamos listos para acompañarte. Contanos sobre tu organización y exploremos juntos cómo podemos ayudarte.',
-      cta: 'Contactanos',
-      emailLabel: 'O escribinos directamente a',
-    },
-    footer: {
-      description: 'Inteligencia climática estructurada y accionable para organizaciones que buscan medir, entender y gestionar su impacto.',
-      platformTitle: 'Plataforma',
-      platformLinks: ['Tecnología', 'Integraciones', 'Métricas', 'Documentación'],
-      companyTitle: 'Empresa',
-      companyLinks: ['Sobre nosotros', 'Blog', 'Contacto', 'Carreras'],
-      legalTitle: 'Legal',
-      legalLinks: ['Privacidad', 'Términos', 'Cookies'],
-      copy: '© 2026 RASTROCERO. Todos los derechos reservados.',
-    },
-    contactPage: {
-      title: 'Empecemos a trabajar juntos',
-      basicInfo: 'Información básica',
-      firstName: 'Nombre',
-      lastName: 'Apellido',
-      role: 'Cargo',
-      company: 'Empresa',
-      website: 'Sitio web de la empresa',
-      companyType: 'Tipo de empresa',
-      country: 'País / Región',
-      email: 'Correo electrónico corporativo',
-      helpTitle: '¿Cómo podemos ayudarte?',
-      message: 'Mensaje adicional',
-      messagePlaceholder: 'Contanos brevemente qué estás buscando, qué tipo de organización sos o qué desafío relacionado con impacto climático te gustaría explorar.',
-      submit: 'Enviar mensaje',
-      sending: 'Enviando...',
-      success: 'Mensaje enviado correctamente. Nos pondremos en contacto pronto.',
-      error: 'Hubo un error al enviar el mensaje. Intentalo de nuevo.',
-      required: 'Obligatorio',
-      companyTypes: ['Startup', 'PyME', 'Corporación', 'ONG', 'Gobierno', 'Otro'],
+      factorName: 'Diesel (Average biofuel blend) - liters [direct]',
+      result: 'Result',
+      resultValue: '4.27',
     },
   },
-  en: {
-    nav: {
-      inicio: 'Home',
-      plataforma: 'Platform',
-      tecnologia: 'Technology',
-      contacto: 'Contact',
-      acceder: 'Contact us',
-    },
-    hero: {
-      badge: 'Climate Intelligence Platform',
-      headline1: 'Climate',
-      headline2: 'Intelligence.',
-      headline3: 'Real Decisions.',
-      sub: 'We transform real activity data into clear, reliable and actionable climate information to make better decisions.',
-      cta: 'SEE TECHNOLOGY',
-    },
-    problem: {
-      title1: 'The challenge of measuring',
-      title2: 'climate impact.',
-      intro: 'Measuring climate impact remains a complex problem for organizations.',
-      items: [
-        { title: 'Scattered data', desc: 'Data is often scattered, incomplete or disconnected from the business.' },
-        { title: 'Multiple sources', desc: 'Climate impact doesn\'t come from a single source, but from multiple activities and decisions.' },
-        { title: 'Fragmented information', desc: 'Information is usually fragmented across different systems and areas.' },
-        { title: 'From measurement to action', desc: 'Measuring doesn\'t always mean being able to analyze, compare or act.' },
-        { title: 'Changing requirements', desc: 'External demands and internal goals evolve faster than current capabilities.' },
-      ],
-      cardDebit: 'Debit',
-    },
-    platform: {
-      sectionLabel: 'The platform',
-      mainTitle1: 'Climate intelligence',
-      mainTitle2: 'structured and actionable.',
-      s1: {
-        title: 'Data turned into intelligence',
-        text: 'RASTROCERO is a platform that converts different types of organizational data into structured, traceable and reusable climate information.',
-        link: 'Learn more',
-        inputs: ['Energy', 'Fleet', 'Procurement'],
-        output: 'Structured climate data',
-        outputSub: 'traceable · auditable · reusable',
-      },
-      s2: {
-        title: 'Designed for complexity',
-        text: 'The platform is designed to adapt to complex realities: from internal operations, production processes and supply chains, to economic decisions, third-party relationships and activity flows.',
-        link: 'Talk to our team',
-        nodes: {
-          operaciones: 'Operations',
-          cadena: 'Supply chain',
-          finanzas: 'Finance',
-          terceros: 'Third parties',
-          actividad: 'Activity',
-        },
-      },
-      s3: {
-        title: 'Holistic vision, concrete action',
-        text: 'Instead of addressing climate impact partially, RASTROCERO enables building a comprehensive vision, connecting what happens inside the organization with its surroundings, and translating that complexity into actionable information.',
-        link: 'Request a demo',
-        status: 'Holistic vision active',
-      },
-    },
-    contact: {
-      sectionLabel: 'Contact',
-      title1: 'Let\'s talk about',
-      title2: 'your climate impact.',
-      text: 'We\'re ready to help. Tell us about your organization and let\'s explore together how we can assist you.',
-      cta: 'Contact us',
-      emailLabel: 'Or email us directly at',
-    },
-    footer: {
-      description: 'Structured and actionable climate intelligence for organizations looking to measure, understand and manage their impact.',
-      platformTitle: 'Platform',
-      platformLinks: ['Technology', 'Integrations', 'Metrics', 'Documentation'],
-      companyTitle: 'Company',
-      companyLinks: ['About us', 'Blog', 'Contact', 'Careers'],
-      legalTitle: 'Legal',
-      legalLinks: ['Privacy', 'Terms', 'Cookies'],
-      copy: '© 2026 RASTROCERO. All rights reserved.',
-    },
-    contactPage: {
-      title: 'Let\'s start working together',
-      basicInfo: 'Basic information',
-      firstName: 'First name',
-      lastName: 'Last name',
-      role: 'Role',
-      company: 'Company',
-      website: 'Company website',
-      companyType: 'Company type',
-      country: 'Country / Region',
-      email: 'Corporate email',
-      helpTitle: 'How can we help you?',
-      message: 'Additional message',
-      messagePlaceholder: 'Briefly tell us what you\'re looking for, what type of organization you are or what climate impact challenge you\'d like to explore.',
-      submit: 'Send message',
-      sending: 'Sending...',
-      success: 'Message sent successfully. We\'ll get back to you soon.',
-      error: 'There was an error sending the message. Please try again.',
-      required: 'Required',
-      companyTypes: ['Startup', 'SME', 'Corporation', 'NGO', 'Government', 'Other'],
-    },
+  cta: {
+    title1: 'See your portfolio',
+    title2: 'in RastroCero.',
+    text: "We'll walk you through the platform with data like yours.",
+    primary: 'Request a demo',
+    emailLabel: 'Or email us at',
+  },
+  footer: {
+    tagline: 'Carbon accounting for financial institutions: operational and financed emissions, with an audit trail.',
+    platformTitle: 'Platform',
+    platformLinks: [
+      { label: 'Operational Module', href: '/#operativo' },
+      { label: 'Financed Module · PCAF', href: '/#pcaf' },
+      { label: 'How it works', href: '/#proceso' },
+      { label: 'Traceability & security', href: '/#seguridad' },
+    ],
+    contactTitle: 'Contact',
+    demo: 'Request a demo',
+    copy: '© 2026 RastroCero. All rights reserved.',
+  },
+  contactPage: {
+    eyebrow: 'Contact',
+    title: 'Request a demo',
+    intro: 'Tell us about your institution and we will get in touch to schedule a walkthrough of the platform.',
+    expectTitle: 'What you will see',
+    expect: [
+      'A tour of the Operational and PCAF modules',
+      'A review of your data sources and asset classes',
+      'Deployment options on your infrastructure',
+    ],
+    emailTitle: 'Direct email',
+    basicInfo: 'Your details',
+    firstName: 'First name',
+    lastName: 'Last name',
+    role: 'Role',
+    company: 'Institution',
+    website: 'Website',
+    companyType: 'Institution type',
+    country: 'Country',
+    email: 'Work email',
+    select: 'Select an option',
+    companyTypes: ['Bank', 'Finance company', 'Credit union', 'Insurer', 'Asset manager', 'Other organisation'],
+    helpTitle: 'What would you like to see?',
+    message: 'Message',
+    messagePlaceholder: 'For example: asset classes in your portfolio, operational inventory scope or reporting deadlines.',
+    required: 'Required',
+    submit: 'Send request',
+    sending: 'Sending…',
+    successTitle: 'Thank you!',
+    success: 'We received your message and will be in touch shortly.',
+    error: 'We could not send your message. Please try again or email us directly.',
+    back: 'Back to home',
+    privacy: 'We only use this information to respond to your request.',
+    subject: 'Demo request',
   },
 }
+
+export const translations: Record<Locale, Dict> = { es, en }
+
+export const CONTACT_EMAIL = 'contacto@rastrocero.com.py'

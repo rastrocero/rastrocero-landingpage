@@ -1,53 +1,51 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { LanguageProvider } from './i18n/LanguageContext'
-import { Navbar } from './Navbar'
-import { Hero } from './Hero'
-import { ProblemSection } from './ProblemSection'
-import { PlatformSection } from './PlatformSection'
-import { ContactSection } from './ContactSection'
-import { Footer } from './Footer'
-import { ContactPage } from './ContactPage'
-import { useReveal } from './hooks/useReveal'
+import { Navbar } from './components/Navbar'
+import { Footer } from './components/Footer'
+import { Home } from './pages/Home'
+import { Contact } from './pages/Contact'
 
-function LandingPage() {
-  useReveal()
+/**
+ * Scrolls to `#hash` targets (also when arriving from another route, where the
+ * section mounts a frame later) and to the top on plain route changes.
+ */
+function ScrollManager() {
+  const { pathname, hash, key } = useLocation()
 
-  return (
-    <>
-      <Hero />
-      <ProblemSection />
-      <PlatformSection />
-      <ContactSection />
-    </>
-  )
-}
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+      return
+    }
+    let frame = 0
+    let tries = 0
+    const scroll = () => {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)))
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      else if (tries++ < 20) frame = requestAnimationFrame(scroll)
+    }
+    scroll()
+    return () => cancelAnimationFrame(frame)
+  }, [pathname, hash, key])
 
-function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
   return null
-}
-
-function ContactRoute() {
-  return (
-    <ContactPage />
-  )
 }
 
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
-        <div className="bg-background text-white antialiased overflow-x-hidden">
-          <ScrollToTop />
-          <Navbar />
+        <ScrollManager />
+        <Navbar />
+        <main>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/contact" element={<ContactRoute />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <Footer />
-        </div>
+        </main>
+        <Footer />
       </BrowserRouter>
     </LanguageProvider>
   )
