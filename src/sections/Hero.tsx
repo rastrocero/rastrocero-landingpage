@@ -1,35 +1,9 @@
-import { useId } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { Reveal } from '../components/Reveal'
+import { HeroArtLayers } from '../components/HeroArtLayers'
 
-/** Pixel size of the hero art; the stream paths below are drawn in this space. */
-const ART_W = 2382
-const ART_H = 1868
-
-/**
- * Three currents that follow the artwork's own shapes: the upper edge of the
- * pale wave, the thin double line that climbs past the leaves, and the crest
- * of the teal wave. Dashes travel from the bottom-left towards the top-right.
- */
-const STREAMS = [
-  {
-    d: 'M 0 1821 C 250 1740 500 1690 700 1600 C 950 1490 1100 1400 1280 1255 C 1400 1150 1550 1030 1790 925 C 1950 855 2100 740 2200 640 C 2280 560 2330 500 2382 440',
-    className: 'hero-stream hero-stream--a',
-    tone: 'green',
-  },
-  {
-    d: 'M 700 1800 C 850 1720 1050 1650 1250 1560 C 1330 1500 1330 1400 1400 1280 C 1450 1180 1520 1120 1650 1070 C 1800 1010 1950 960 2060 880 C 2150 800 2210 620 2260 500 C 2290 430 2320 380 2360 330',
-    className: 'hero-stream hero-stream--b',
-    tone: 'light',
-  },
-  {
-    d: 'M 1290 1868 C 1420 1780 1560 1680 1700 1565 C 1860 1430 2050 1300 2212 1236 C 2280 1210 2340 1225 2382 1245',
-    className: 'hero-stream hero-stream--c',
-    tone: 'light',
-  },
-] as const
 
 /**
  * The platform's calmest moment, as the site's opening: the leaf landscape
@@ -40,7 +14,6 @@ const STREAMS = [
 export function Hero() {
   const { t } = useLanguage()
   const h = t.hero
-  const gradientId = useId()
 
   return (
     <section className="relative isolate flex min-h-svh flex-col overflow-hidden bg-white">
@@ -75,60 +48,12 @@ export function Hero() {
           uncovers the section edge. Desktop: full section height, capped so the
           faint left part of the crop stays clear of the copy. Portrait: wider
           than the screen, the white upper-left of the crop falls off-screen.
-          The frame holds the masks; the two nested layers only move. */}
+          The frame holds the size and the fade masks; the art component fills it. */}
       <div
         aria-hidden
         className="pointer-events-none absolute -right-4 -bottom-3 -z-10 aspect-[2382/1868] w-[120vw] max-w-none select-none [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_92%,transparent),linear-gradient(to_right,transparent,black_18%)] sm:w-[108vw] md:w-[100vw] lg:h-[calc(100%+12px)] lg:w-[min(78vw,127.5svh)] lg:[mask-image:linear-gradient(to_bottom,transparent,black_14%,black_90%,transparent),linear-gradient(to_right,transparent,black_26%)]"
       >
-        <div className="hero-drift-x h-full w-full">
-          <div className="hero-drift-y relative h-full w-full">
-            <img
-              src="/brand/hero/hero-stream.webp"
-              srcSet="/brand/hero/hero-stream-sm.webp 1200w, /brand/hero/hero-stream.webp 2382w"
-              sizes="(min-width: 1024px) 80vw, 120vw"
-              alt=""
-              width={ART_W}
-              height={ART_H}
-              fetchPriority="high"
-              draggable={false}
-              className="h-full w-full object-contain object-right-bottom"
-            />
-            <svg
-              viewBox={`0 0 ${ART_W} ${ART_H}`}
-              preserveAspectRatio="xMaxYMax meet"
-              className="hero-streams absolute inset-0 h-full w-full"
-            >
-              <defs>
-                {/* Light along the saturated shapes; a deeper green along the pale wave. */}
-                <linearGradient id={`${gradientId}-light`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={ART_W} y2="0">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0" />
-                  <stop offset="0.3" stopColor="#fff" stopOpacity="0.35" />
-                  <stop offset="0.55" stopColor="#fff" stopOpacity="1" />
-                  <stop offset="0.92" stopColor="#fff" stopOpacity="1" />
-                  <stop offset="1" stopColor="#fff" stopOpacity="0.5" />
-                </linearGradient>
-                <linearGradient id={`${gradientId}-green`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={ART_W} y2="0">
-                  <stop offset="0" stopColor="var(--color-r0-accent)" stopOpacity="0" />
-                  <stop offset="0.28" stopColor="var(--color-r0-accent)" stopOpacity="0.45" />
-                  <stop offset="0.55" stopColor="var(--color-r0-accent)" stopOpacity="1" />
-                  <stop offset="0.9" stopColor="var(--color-r0-accent)" stopOpacity="1" />
-                  <stop offset="1" stopColor="var(--color-r0-accent)" stopOpacity="0.4" />
-                </linearGradient>
-              </defs>
-              {STREAMS.map((s) => (
-                <path
-                  key={s.className}
-                  d={s.d}
-                  fill="none"
-                  stroke={`url(#${gradientId}-${s.tone})`}
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  className={s.className}
-                />
-              ))}
-            </svg>
-          </div>
-        </div>
+        <HeroArtLayers />
       </div>
     </section>
   )
