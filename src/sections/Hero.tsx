@@ -24,7 +24,7 @@ export function Hero() {
             {h.title1}
             <br className="hidden sm:block" /> {h.title2}
           </h1>
-          <p className="mt-6 max-w-[38rem] text-[17px] leading-relaxed text-r0-text-secondary text-pretty sm:text-lg 2xl:max-w-[42rem] 2xl:text-xl">{h.sub}</p>
+          <p className="mt-6 max-w-[44rem] text-[17px] leading-relaxed text-r0-text-secondary text-pretty sm:text-lg 2xl:max-w-[48rem] 2xl:text-xl">{h.sub}</p>
 
           <div className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
             <Link
