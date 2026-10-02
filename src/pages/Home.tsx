@@ -1,19 +1,20 @@
 import { Hero } from '../sections/Hero'
-import { ProductView } from '../sections/ProductView'
 import { Challenge } from '../sections/Challenge'
-import { EmissionsBanker } from '../sections/EmissionsBanker'
-import { Process } from '../sections/Process'
+import { Platform } from '../sections/Platform'
+import { Bankers, BankersProcess, Vision } from '../sections/Vision'
 import { Security } from '../sections/Security'
 import { CtaBand } from '../sections/CtaBand'
 
+/* What a bank can try today (Platform), then what we are building (Vision → Bankers → Process). */
 export function Home() {
   return (
     <>
       <Hero />
-      <ProductView />
       <Challenge />
-      <EmissionsBanker />
-      <Process />
+      <Platform />
+      <Vision />
+      <Bankers />
+      <BankersProcess />
       <Security />
       <CtaBand />
     </>

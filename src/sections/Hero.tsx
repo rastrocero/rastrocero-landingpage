@@ -34,7 +34,7 @@ export function Hero() {
               {h.ctaPrimary}
             </Link>
             <Link
-              to="/#plataforma"
+              to="/#vision"
               className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-r0-primary transition-colors hover:text-r0-primary-medium"
             >
               {h.ctaSecondary}

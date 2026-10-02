@@ -2,14 +2,15 @@ import type { ReactNode } from 'react'
 import { FileSpreadsheet } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { Reveal } from '../components/Reveal'
+import { AppMockup } from '../components/AppMockup'
 import { SectionHeading } from '../components/SectionHeading'
 import { PCAF_ICONS, dqsColor } from '../lib/pcaf'
 
 /*
- * The product section: four panels with the same anatomy (mono label, title,
- * one sentence, one visual) in the order a bank meets them — what can be
- * measured, how it gets in, how the bank's share is computed, how solid the
- * result is.
+ * The measurement platform a bank can try today, in one section: the product
+ * shell, four panels with the same anatomy (mono label, title, one sentence,
+ * one visual) and the working flow. Everything here is present tense; the
+ * bankers of the vision live in their own sections.
  */
 
 interface PanelProps {
@@ -36,7 +37,7 @@ function AssetClasses() {
 
   return (
     <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-r0-border bg-r0-border sm:grid-cols-2 xl:grid-cols-3">
-      {t.product.assetClasses.map((c) => {
+      {t.platform.assetClasses.map((c) => {
         const Icon = PCAF_ICONS[c.code]
         return (
           <li key={c.code} className="flex items-center gap-2.5 bg-white px-3.5 py-3">
@@ -51,7 +52,7 @@ function AssetClasses() {
 
 function Upload() {
   const { t } = useLanguage()
-  const u = t.product.upload
+  const u = t.platform.upload
 
   return (
     <div className="rounded-lg border border-r0-border bg-r0-bg/60 p-4">
@@ -80,7 +81,7 @@ function Upload() {
 
 function Formula() {
   const { t } = useLanguage()
-  const a = t.product.attribution
+  const a = t.platform.attribution
   const term = 'rounded-md bg-r0-bg px-2.5 py-1.5 text-center text-[13px] font-medium leading-snug text-r0-text ring-1 ring-r0-border'
 
   return (
@@ -106,7 +107,7 @@ function Formula() {
 
 function DqsScale() {
   const { t } = useLanguage()
-  const d = t.product.dqs
+  const d = t.platform.dqs
 
   return (
     <div>
@@ -126,19 +127,26 @@ function DqsScale() {
   )
 }
 
-export function EmissionsBanker() {
+export function Platform() {
   const { t } = useLanguage()
-  const p = t.product
+  const p = t.platform
 
   return (
-    <section id="emissions-banker" className="bg-r0-bg py-16 sm:py-24">
-      <Reveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-16">
-          <SectionHeading eyebrow={p.eyebrow} title1={p.title1} title2={p.title2} className="lg:col-span-6" />
-          <p className="text-base leading-relaxed text-r0-text-secondary sm:text-lg lg:col-span-6">{p.text}</p>
-        </div>
+    <section id="plataforma" className="bg-white py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionHeading title={p.title} lead={p.lead} className="max-w-3xl" />
+        </Reveal>
 
-        <div className="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-2">
+        <Reveal as="figure" className="mt-10 sm:mt-12">
+          <AppMockup />
+          <figcaption className="mt-3 text-xs text-r0-text-muted">{p.exampleNote}</figcaption>
+        </Reveal>
+
+        {/* Old anchor, kept so existing links to #emissions-banker still land on the feature panels. */}
+        <span id="emissions-banker" aria-hidden className="block scroll-mt-24" />
+
+        <Reveal className="mt-14 grid gap-6 lg:mt-16 lg:grid-cols-2">
           <Panel label={p.classes.label} title={p.classes.title} text={p.classes.text}>
             <AssetClasses />
           </Panel>
@@ -151,10 +159,21 @@ export function EmissionsBanker() {
           <Panel label={p.dqs.label} title={p.dqs.title} text={p.dqs.text}>
             <DqsScale />
           </Panel>
-        </div>
+        </Reveal>
 
-        <p className="mt-10 max-w-2xl border-t border-r0-border pt-6 text-[15px] leading-relaxed text-r0-text-secondary">{p.vision}</p>
-      </Reveal>
+        <Reveal>
+          <ol className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+            {p.steps.map((step, i) => (
+              <li key={step.title} className="border-t border-r0-text/80 pt-5">
+                <span className="font-mono text-xs text-r0-primary-medium">0{i + 1}</span>
+                <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-r0-text">{step.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-r0-text-secondary">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-10 text-xs text-r0-text-muted">{p.footnote}</p>
+        </Reveal>
+      </div>
     </section>
   )
 }

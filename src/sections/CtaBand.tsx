@@ -11,14 +11,15 @@ export function CtaBand() {
   const c = t.cta
 
   return (
-    <section className="bg-r0-bg pb-16 sm:pb-24">
+    <section id="contacto" className="bg-r0-bg pb-16 sm:pb-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal className="relative isolate overflow-hidden rounded-xl bg-r0-deep px-6 py-16 text-center sm:px-12 sm:py-20">
           <FlowLines tone="dark" className="-z-10 opacity-40" />
 
           <Logo on="dark" className="mx-auto h-[14px] opacity-90" />
-          <h2 className="mx-auto mt-8 max-w-2xl font-display text-3xl font-semibold leading-[1.15] tracking-[-0.02em] text-balance text-white sm:text-4xl">
-            {c.title1} {c.title2}
+          <p className="mt-8 font-display text-xs font-semibold uppercase tracking-[0.2em] text-r0-accent-light">{c.label}</p>
+          <h2 className="mx-auto mt-4 max-w-2xl font-display text-3xl font-semibold leading-[1.15] tracking-[-0.02em] text-balance text-white sm:text-4xl">
+            {c.title}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">{c.text}</p>
 
