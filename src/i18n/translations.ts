@@ -1,8 +1,12 @@
 export type Locale = 'es' | 'en'
 
 /*
- * Product naming: "Emissions Banker" is the product (the first of the
- * autonomous climate bankers); "emisiones financiadas" is what it measures.
+ * Two things, kept apart:
+ * - "Plataforma": the measurement software a bank can try today. Present tense.
+ *   It has no product name; never call it "Emissions Banker".
+ * - "Visión" / "Bankers" / "Proceso": the team of autonomous Climate Bankers we
+ *   are building. Future tense. Emissions Banker is one of those five roles.
+ * Section titles are one or two words.
  */
 
 const es = {
@@ -11,8 +15,9 @@ const es = {
   },
   nav: {
     platform: 'Plataforma',
-    product: 'Emissions Banker',
-    process: 'Cómo funciona',
+    vision: 'Visión',
+    bankers: 'Bankers',
+    process: 'Proceso',
     security: 'Seguridad',
     demo: 'Solicitar demo',
     openMenu: 'Abrir menú',
@@ -20,16 +25,12 @@ const es = {
     switchLang: 'Switch to English',
   },
   hero: {
-    eyebrow: 'Emissions Banker · para instituciones financieras',
-    title1: 'Entendé las emisiones',
-    title2: 'de la cartera de tu banco.',
-    sub: 'Cargá tus exposiciones, calculá emisiones financiadas con metodologías PCAF y revisá la calidad y trazabilidad de cada resultado en un solo lugar.',
-    ctaPrimary: 'Solicitar una demo',
-    ctaSecondary: 'Conocer la plataforma',
-  },
-  productView: {
-    eyebrow: 'La plataforma',
-    text: 'Emissions Banker reúne tu cartera, sus emisiones financiadas y la calidad de cada dato en un solo lugar.',
+    eyebrow: 'Emisiones financiadas para bancos',
+    title1: 'Medí y entendé las emisiones',
+    title2: 'financiadas de tu cartera.',
+    sub: 'Cargá exposiciones, calculá emisiones financiadas con metodologías PCAF y revisá la calidad de cada resultado en una sola plataforma.',
+    ctaPrimary: 'Solicitar demo',
+    ctaSecondary: 'Visión',
   },
   mockup: {
     url: 'rastrocero.tubanco.com',
@@ -66,10 +67,9 @@ const es = {
       classesTitle: 'Productos disponibles',
     },
   },
-  challenge: {
-    eyebrow: 'Contexto',
-    title1: 'La huella de un banco',
-    title2: 'está en su cartera.',
+  context: {
+    title: 'Contexto',
+    statement: 'La huella de un banco está en su cartera.',
     intro: 'Las emisiones que una institución financia superan por mucho a las que genera en sus oficinas. Medirlas exige datos de miles de clientes, metodologías específicas y un nivel de detalle que las planillas no sostienen.',
     vizOperational: 'Emisiones operativas',
     vizFinanced: 'Emisiones financiadas',
@@ -82,11 +82,10 @@ const es = {
       { title: 'Auditoría sin atajos', text: 'Cada número reportado tiene que poder explicarse: de dónde viene, qué método usó y quién lo cargó.' },
     ],
   },
-  product: {
-    eyebrow: 'Emissions Banker',
-    title1: 'Emisiones financiadas,',
-    title2: 'exposición por exposición.',
-    text: 'Emissions Banker calcula las emisiones de cada préstamo e inversión con la metodología PCAF de su clase de activo y muestra qué tan sólido es cada resultado.',
+  platform: {
+    title: 'Plataforma',
+    lead: 'La plataforma reúne tu cartera, sus emisiones financiadas y la calidad de cada dato en un solo lugar.',
+    exampleNote: 'Datos de ejemplo.',
     classes: {
       label: 'Clases de activo',
       title: 'Las 9 clases de activo de PCAF',
@@ -117,7 +116,13 @@ const es = {
       hint: 'De mayor a menor calidad',
       levels: ['Emisiones verificadas', 'Emisiones reportadas', 'Datos de actividad', 'Datos de ingresos', 'Promedios sectoriales'],
     },
-    vision: 'Emissions Banker es el primero de los autonomous climate bankers que estamos construyendo para instituciones financieras.',
+    steps: [
+      { title: 'Cargá', text: 'Subí las exposiciones de tu cartera con formularios guiados o planillas XLSX.' },
+      { title: 'Calculá', text: 'El motor aplica el método PCAF que corresponde a cada clase de activo y a los datos disponibles.' },
+      { title: 'Revisá', text: 'Mirá los resultados, el Data Quality Score y el detalle de cada exposición.' },
+      { title: 'Usá', text: 'Prepará el análisis de la cartera y detectá dónde conviene mejorar los datos.' },
+    ],
+    footnote: 'Las cifras, los clientes y los archivos que se muestran en esta página son ejemplos.',
     assetClasses: [
       { code: 'acciones', name: 'Acciones cotizadas', desc: 'Participaciones accionarias en mercados públicos' },
       { code: 'bonos', name: 'Bonos corporativos', desc: 'Bonos corporativos cotizados' },
@@ -130,21 +135,35 @@ const es = {
       { code: 'subsoberana', name: 'Deuda subsoberana', desc: 'Deuda subsoberana y municipal' },
     ],
   },
+  vision: {
+    title: 'Visión',
+    claim: 'Estamos construyendo el primer equipo de Climate Bankers autónomos para instituciones financieras.',
+    text: 'Los bankers trabajarán continuamente sobre la cartera: identificarán los datos que falten, retomarán los casos cuando llegue nueva información y se pasarán el trabajo entre sí. El equipo del banco supervisará excepciones y decisiones que requieran su criterio.',
+  },
+  bankers: {
+    title: 'Bankers',
+    items: [
+      { name: 'Emissions Banker', text: 'Recopilará datos, detectará faltantes y mantendrá actualizado el análisis de emisiones financiadas.' },
+      { name: 'Opportunity Banker', text: 'Evaluará qué intervenciones de transición merecen estudio a partir de los datos de cartera y prestatarios.' },
+      { name: 'Deal Banker', text: 'Preparará un expediente con evidencia, supuestos, encaje preliminar con productos y siguiente acción para revisión del banco.' },
+      { name: 'Monitoring Banker', text: 'Seguirá cambios, hitos y compromisos; actualizará casos o escalará desviaciones.' },
+      { name: 'Reporting Banker', text: 'Preparará información trazable para revisiones y reportes.' },
+    ],
+  },
   process: {
-    eyebrow: 'Cómo funciona',
-    title1: 'Cargás tu cartera.',
-    title2: 'Sale un número que podés defender.',
+    title: 'Proceso',
+    lead: 'Así se coordinarán los bankers sobre un caso de la cartera.',
     steps: [
-      { title: 'Cargá', text: 'Subí las exposiciones de tu cartera con formularios guiados o planillas XLSX.' },
-      { title: 'Calculá', text: 'El motor aplica el método PCAF que corresponde a cada clase de activo y a los datos disponibles.' },
-      { title: 'Revisá', text: 'Mirá los resultados, el Data Quality Score y el detalle de cada exposición.' },
-      { title: 'Usá', text: 'Prepará el análisis de la cartera y detectá dónde conviene mejorar los datos.' },
+      { title: 'Dato nuevo', text: 'Entrará una exposición nueva o un dato actualizado de la cartera.' },
+      { title: 'Faltante detectado', text: 'Emissions Banker identificará qué información falta y la pedirá.' },
+      { title: 'Dato recibido y caso retomado', text: 'Cuando llegue la información, el caso seguirá desde donde quedó.' },
+      { title: 'Oportunidad y expediente', text: 'Opportunity Banker evaluará la intervención y Deal Banker preparará el expediente para el banco.' },
+      { title: 'Seguimiento', text: 'Monitoring Banker seguirá hitos y compromisos; Reporting Banker dejará la información trazable.' },
     ],
   },
   security: {
-    eyebrow: 'Trazabilidad y seguridad',
-    title1: 'Cada número,',
-    title2: 'con su historia.',
+    title: 'Seguridad',
+    statement: 'Cada número, con su historia.',
     text: 'Cada cálculo se guarda de forma inmutable, con los datos de entrada, la opción PCAF aplicada y la versión del motor. Si un dato cambia, el resultado anterior queda marcado como desactualizado: nunca se pisa.',
     features: [
       { title: 'Roles y permisos', text: 'Acceso por rol, administrado por cada institución.' },
@@ -168,32 +187,34 @@ const es = {
       staleTag: 'Desactualizado',
       result: 'Emisiones financiadas',
       resultValue: '602,7',
+      exampleNote: 'Datos de ejemplo.',
     },
   },
   cta: {
-    title1: 'Veamos tu cartera',
-    title2: 'en Emissions Banker.',
-    text: 'Te mostramos el flujo completo con una cartera parecida a la tuya.',
-    primary: 'Solicitar una demo',
+    label: 'Contacto',
+    title: 'Veamos las emisiones de tu cartera.',
+    text: 'Te mostramos la plataforma con una cartera parecida a la tuya.',
+    primary: 'Solicitar demo',
     emailLabel: 'O escribinos a',
   },
   footer: {
-    tagline: 'Emissions Banker ayuda a los bancos a entender las emisiones financiadas de su cartera, con cálculos explicables y datos trazables.',
-    platformTitle: 'Plataforma',
-    platformLinks: [
-      { label: 'La plataforma', href: '/#plataforma' },
-      { label: 'Emissions Banker', href: '/#emissions-banker' },
-      { label: 'Cómo funciona', href: '/#proceso' },
-      { label: 'Trazabilidad y seguridad', href: '/#seguridad' },
+    tagline: 'Medición de emisiones financiadas para bancos. Construimos un equipo de Climate Bankers autónomos.',
+    linksTitle: 'Sitio',
+    links: [
+      { label: 'Plataforma', href: '/#plataforma' },
+      { label: 'Visión', href: '/#vision' },
+      { label: 'Bankers', href: '/#bankers' },
+      { label: 'Proceso', href: '/#proceso' },
+      { label: 'Seguridad', href: '/#seguridad' },
     ],
     contactTitle: 'Contacto',
-    demo: 'Solicitar una demo',
+    demo: 'Solicitar demo',
     copy: '© 2026 RastroCero. Todos los derechos reservados.',
   },
   contactPage: {
     eyebrow: 'Contacto',
     title: 'Solicitá una demo',
-    intro: 'Contanos sobre tu institución y te contactamos para mostrarte Emissions Banker con una cartera de ejemplo.',
+    intro: 'Contanos sobre tu institución y te contactamos para mostrarte la plataforma con una cartera de ejemplo.',
     expectTitle: 'Qué vas a ver',
     expect: [
       'Carga de una cartera y cálculo de emisiones financiadas con PCAF',
@@ -235,8 +256,9 @@ const en: Dict = {
   },
   nav: {
     platform: 'Platform',
-    product: 'Emissions Banker',
-    process: 'How it works',
+    vision: 'Vision',
+    bankers: 'Bankers',
+    process: 'Process',
     security: 'Security',
     demo: 'Request a demo',
     openMenu: 'Open menu',
@@ -244,16 +266,12 @@ const en: Dict = {
     switchLang: 'Cambiar a español',
   },
   hero: {
-    eyebrow: 'Emissions Banker · for financial institutions',
-    title1: 'Understand the emissions',
-    title2: "in your bank's portfolio.",
-    sub: 'Upload your exposures, calculate financed emissions with PCAF methodologies and review the quality and traceability of every result in one place.',
+    eyebrow: 'Financed emissions for banks',
+    title1: 'Measure and understand',
+    title2: "your portfolio's financed emissions.",
+    sub: 'Upload exposures, calculate financed emissions with PCAF methodologies and review the quality of every result in a single platform.',
     ctaPrimary: 'Request a demo',
-    ctaSecondary: 'Explore the platform',
-  },
-  productView: {
-    eyebrow: 'The platform',
-    text: 'Emissions Banker brings your portfolio, its financed emissions and the quality of every data point together in one place.',
+    ctaSecondary: 'Vision',
   },
   mockup: {
     url: 'rastrocero.yourbank.com',
@@ -290,10 +308,9 @@ const en: Dict = {
       classesTitle: 'Available products',
     },
   },
-  challenge: {
-    eyebrow: 'Context',
-    title1: "A bank's footprint",
-    title2: 'lives in its portfolio.',
+  context: {
+    title: 'Context',
+    statement: "A bank's footprint lives in its portfolio.",
     intro: 'The emissions an institution finances far exceed those it produces in its own offices. Measuring them takes data from thousands of clients, specific methodologies and a level of detail spreadsheets cannot sustain.',
     vizOperational: 'Operational emissions',
     vizFinanced: 'Financed emissions',
@@ -306,11 +323,10 @@ const en: Dict = {
       { title: 'No shortcuts for audit', text: 'Every reported number must be explainable: where it came from, which method it used and who entered it.' },
     ],
   },
-  product: {
-    eyebrow: 'Emissions Banker',
-    title1: 'Financed emissions,',
-    title2: 'exposure by exposure.',
-    text: 'Emissions Banker calculates the emissions of every loan and investment with the PCAF methodology for its asset class, and shows how solid each result is.',
+  platform: {
+    title: 'Platform',
+    lead: 'The platform brings your portfolio, its financed emissions and the quality of every data point together in one place.',
+    exampleNote: 'Example data.',
     classes: {
       label: 'Asset classes',
       title: 'All 9 PCAF asset classes',
@@ -341,7 +357,13 @@ const en: Dict = {
       hint: 'From higher to lower quality',
       levels: ['Verified emissions', 'Reported emissions', 'Activity data', 'Revenue data', 'Sector averages'],
     },
-    vision: 'Emissions Banker is the first of the autonomous climate bankers we are building for financial institutions.',
+    steps: [
+      { title: 'Upload', text: 'Bring in your portfolio exposures with guided forms or XLSX workbooks.' },
+      { title: 'Calculate', text: 'The engine applies the PCAF method that fits each asset class and the data available.' },
+      { title: 'Review', text: 'See the results, the Data Quality Score and the detail of every exposure.' },
+      { title: 'Use', text: 'Prepare the portfolio analysis and spot where better data pays off.' },
+    ],
+    footnote: 'The figures, clients and files shown on this page are examples.',
     assetClasses: [
       { code: 'acciones', name: 'Listed equity', desc: 'Shareholdings in public markets' },
       { code: 'bonos', name: 'Corporate bonds', desc: 'Listed corporate bonds' },
@@ -354,21 +376,35 @@ const en: Dict = {
       { code: 'subsoberana', name: 'Sub-sovereign debt', desc: 'Sub-sovereign and municipal debt' },
     ],
   },
+  vision: {
+    title: 'Vision',
+    claim: 'We are building the first team of autonomous Climate Bankers for financial institutions.',
+    text: "The bankers will work on the portfolio continuously: they will identify missing data, pick cases back up when new information arrives and hand work over to one another. The bank's team will oversee exceptions and the decisions that call for its judgement.",
+  },
+  bankers: {
+    title: 'Bankers',
+    items: [
+      { name: 'Emissions Banker', text: 'Will gather data, detect gaps and keep the financed-emissions analysis up to date.' },
+      { name: 'Opportunity Banker', text: 'Will assess which transition interventions are worth studying, based on portfolio and borrower data.' },
+      { name: 'Deal Banker', text: 'Will prepare a file with evidence, assumptions, a preliminary product fit and the next action for the bank to review.' },
+      { name: 'Monitoring Banker', text: 'Will track changes, milestones and commitments; it will update cases or escalate deviations.' },
+      { name: 'Reporting Banker', text: 'Will prepare traceable information for reviews and reports.' },
+    ],
+  },
   process: {
-    eyebrow: 'How it works',
-    title1: 'You upload your portfolio.',
-    title2: 'Out comes a number you can defend.',
+    title: 'Process',
+    lead: 'How the bankers will coordinate on a case in the portfolio.',
     steps: [
-      { title: 'Upload', text: 'Bring in your portfolio exposures with guided forms or XLSX workbooks.' },
-      { title: 'Calculate', text: 'The engine applies the PCAF method that fits each asset class and the data available.' },
-      { title: 'Review', text: 'See the results, the Data Quality Score and the detail of every exposure.' },
-      { title: 'Use', text: 'Prepare the portfolio analysis and spot where better data pays off.' },
+      { title: 'New data', text: 'A new exposure or an updated data point will come into the portfolio.' },
+      { title: 'Gap detected', text: 'Emissions Banker will identify what information is missing and request it.' },
+      { title: 'Data received, case resumed', text: 'When the information arrives, the case will continue from where it stopped.' },
+      { title: 'Opportunity and file', text: 'Opportunity Banker will assess the intervention and Deal Banker will prepare the file for the bank.' },
+      { title: 'Follow-up', text: 'Monitoring Banker will track milestones and commitments; Reporting Banker will keep the information traceable.' },
     ],
   },
   security: {
-    eyebrow: 'Traceability & security',
-    title1: 'Every number',
-    title2: 'has a history.',
+    title: 'Security',
+    statement: 'Every number has a history.',
     text: 'Every calculation is stored immutably, with its inputs, the PCAF option applied and the engine version. When an input changes, the previous result is flagged as outdated — never overwritten.',
     features: [
       { title: 'Roles & permissions', text: 'Role-based access, managed by each institution.' },
@@ -392,23 +428,25 @@ const en: Dict = {
       staleTag: 'Outdated',
       result: 'Financed emissions',
       resultValue: '602.7',
+      exampleNote: 'Example data.',
     },
   },
   cta: {
-    title1: 'See your portfolio',
-    title2: 'in Emissions Banker.',
-    text: "We'll walk you through the full flow with a portfolio like yours.",
+    label: 'Contact',
+    title: "Let's look at your portfolio's emissions.",
+    text: "We'll walk you through the platform with a portfolio like yours.",
     primary: 'Request a demo',
     emailLabel: 'Or email us at',
   },
   footer: {
-    tagline: 'Emissions Banker helps banks understand the financed emissions of their portfolio, with explainable calculations and traceable data.',
-    platformTitle: 'Platform',
-    platformLinks: [
-      { label: 'The platform', href: '/#plataforma' },
-      { label: 'Emissions Banker', href: '/#emissions-banker' },
-      { label: 'How it works', href: '/#proceso' },
-      { label: 'Traceability & security', href: '/#seguridad' },
+    tagline: 'Financed-emissions measurement for banks. We are building a team of autonomous Climate Bankers.',
+    linksTitle: 'Site',
+    links: [
+      { label: 'Platform', href: '/#plataforma' },
+      { label: 'Vision', href: '/#vision' },
+      { label: 'Bankers', href: '/#bankers' },
+      { label: 'Process', href: '/#proceso' },
+      { label: 'Security', href: '/#seguridad' },
     ],
     contactTitle: 'Contact',
     demo: 'Request a demo',
@@ -417,7 +455,7 @@ const en: Dict = {
   contactPage: {
     eyebrow: 'Contact',
     title: 'Request a demo',
-    intro: 'Tell us about your institution and we will get in touch to show you Emissions Banker with a sample portfolio.',
+    intro: 'Tell us about your institution and we will get in touch to show you the platform with a sample portfolio.',
     expectTitle: 'What you will see',
     expect: [
       'Uploading a portfolio and calculating financed emissions with PCAF',

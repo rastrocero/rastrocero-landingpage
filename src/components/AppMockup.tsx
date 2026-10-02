@@ -238,7 +238,7 @@ function ProductsView() {
       <div className="anim-rail-in relative z-[1] px-5 py-4">
         <p className="mb-2.5 text-[12px] font-medium text-r0-text-secondary">{t.mockup.financed.heading}</p>
         <div className="grid auto-rows-fr grid-cols-3 gap-px overflow-hidden rounded-lg border border-r0-border bg-r0-border">
-          {t.product.assetClasses.map((c) => {
+          {t.platform.assetClasses.map((c) => {
             const Icon = PCAF_ICONS[c.code]
             return (
               <div key={c.code} className="flex min-h-[84px] flex-col gap-1.5 bg-r0-surface p-3.5">
@@ -364,7 +364,7 @@ function MobileShell() {
 
         <div className="overflow-hidden rounded-xl border border-r0-border bg-white">
           <p className="border-b border-r0-border px-4 py-2.5 text-[11px] font-medium text-r0-text-secondary">{m.classesTitle}</p>
-          {t.product.assetClasses.slice(2, 7).map((c) => {
+          {t.platform.assetClasses.slice(2, 7).map((c) => {
             const Icon = PCAF_ICONS[c.code]
             return (
               <div key={c.code} className="flex items-center justify-between gap-3 border-b border-r0-border px-4 py-2.5 last:border-b-0">

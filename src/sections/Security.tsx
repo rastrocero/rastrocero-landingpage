@@ -104,7 +104,7 @@ export function Security() {
     <section id="seguridad" className="bg-r0-bg py-16 sm:py-24">
       <Reveal className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
         <div className="lg:col-span-7">
-          <SectionHeading eyebrow={s.eyebrow} title1={s.title1} title2={s.title2} />
+          <SectionHeading title={s.title} statement={s.statement} />
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-r0-text-secondary sm:text-lg">{s.text}</p>
 
           <dl className="mt-10 grid gap-x-10 sm:grid-cols-2">
@@ -117,9 +117,10 @@ export function Security() {
           </dl>
         </div>
 
-        <div className="lg:sticky lg:top-24 lg:col-span-5">
+        <figure className="lg:sticky lg:top-24 lg:col-span-5">
           <RecordCard />
-        </div>
+          <figcaption className="mt-3 text-xs text-r0-text-muted">{s.record.exampleNote}</figcaption>
+        </figure>
       </Reveal>
     </section>
   )

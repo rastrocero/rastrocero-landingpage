@@ -9,7 +9,7 @@ const ROWS = 20
 
 function RatioViz() {
   const { t } = useLanguage()
-  const c = t.challenge
+  const c = t.context
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.35 })
   const dot = (color: string) => `radial-gradient(circle at center, ${color} 0 40%, transparent 45%)`
 
@@ -57,13 +57,13 @@ function RatioViz() {
 
 export function Challenge() {
   const { t } = useLanguage()
-  const c = t.challenge
+  const c = t.context
 
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section id="contexto" className="bg-r0-bg py-16 sm:py-24">
       <Reveal className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
         <div className="lg:col-span-5">
-          <SectionHeading eyebrow={c.eyebrow} title1={c.title1} title2={c.title2} />
+          <SectionHeading title={c.title} statement={c.statement} />
           <p className="mt-6 text-base leading-relaxed text-r0-text-secondary sm:text-lg">{c.intro}</p>
 
           <dl className="mt-10 border-b border-r0-border">

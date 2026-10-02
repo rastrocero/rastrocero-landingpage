@@ -19,9 +19,9 @@ export function Footer() {
         </div>
 
         <div className="md:col-span-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-r0-text">{f.platformTitle}</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-r0-text">{f.linksTitle}</h3>
           <ul className="mt-4 space-y-2.5">
-            {f.platformLinks.map((l) => (
+            {f.links.map((l) => (
               <li key={l.href}>
                 <Link to={l.href} className="text-sm text-r0-text-secondary transition-colors hover:text-r0-primary">
                   {l.label}
