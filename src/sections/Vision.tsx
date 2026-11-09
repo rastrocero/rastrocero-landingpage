@@ -3,12 +3,14 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { Reveal } from '../components/Reveal'
 import { SectionHeading } from '../components/SectionHeading'
 import { FlowLines } from '../components/FlowLines'
+import { cn } from '../lib/cn'
 
 /*
  * The vision chapter: Visión, Bankers and Proceso share one dark band so they
- * read as a single, separate story from the platform above. Everything is
- * written in the future tense, and nothing here is a card or a button — these
- * roles are not products a bank can use yet.
+ * read as a single, separate story from the platform above. Nothing here is a
+ * card or a button. Emissions Banker, the first of the five, already works in
+ * the platform and is written in the present tense with its status beside it;
+ * the other four are still being built and stay in the future tense.
  */
 
 /** Short title on the left, content on the right. */
@@ -53,8 +55,14 @@ export function Bankers() {
                 key={item.name}
                 className="grid gap-x-10 gap-y-1.5 border-t border-white/15 py-5 first:border-t-0 first:pt-0 last:pb-0 sm:grid-cols-[13rem_1fr]"
               >
-                <dt className="font-display text-[17px] font-semibold text-white">{item.name}</dt>
-                <dd className="text-[15px] leading-relaxed text-white/70">{item.text}</dd>
+                <dt>
+                  <span className="block font-display text-[17px] font-semibold text-white">{item.name}</span>
+                  <span className={cn('mt-1.5 flex items-center gap-2 text-xs', item.live ? 'text-r0-accent-light' : 'text-white/45')}>
+                    <span aria-hidden className={cn('size-1.5 rounded-full', item.live ? 'bg-r0-accent-light' : 'ring-1 ring-inset ring-white/45')} />
+                    {item.live ? b.live : b.building}
+                  </span>
+                </dt>
+                <dd className={cn('text-[15px] leading-relaxed', item.live ? 'text-white/85' : 'text-white/70')}>{item.text}</dd>
               </div>
             ))}
           </dl>

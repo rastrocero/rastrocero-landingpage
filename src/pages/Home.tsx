@@ -5,7 +5,7 @@ import { Bankers, BankersProcess, Vision } from '../sections/Vision'
 import { Security } from '../sections/Security'
 import { CtaBand } from '../sections/CtaBand'
 
-/* What a bank can try today (Platform), then what we are building (Vision → Bankers → Process). */
+/* What a bank can try today (Platform, with Emissions Banker), then the team we are building (Vision → Bankers → Process). */
 export function Home() {
   return (
     <>
