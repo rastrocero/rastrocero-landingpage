@@ -81,7 +81,7 @@ function RecordCard() {
         </div>
       </dl>
 
-      <div className="mx-5 mb-5 mt-2 overflow-hidden rounded-lg bg-r0-deep">
+      <div className="@container mx-5 mb-5 mt-2 overflow-hidden rounded-lg bg-r0-deep">
         <p className="border-b border-white/10 px-4 py-2 font-mono text-[10.5px] text-white/50">calculation_snapshot</p>
         <pre className="whitespace-pre-wrap break-words px-4 py-3 font-mono text-[11.5px] leading-[1.7]">
           <code>
@@ -92,7 +92,14 @@ function RecordCard() {
             <Line k="outstanding_amount" v="2400000" />
             <Line k="equity_plus_debt" v="18000000" />
             <Line k="attribution_factor" v="0.13333333" />
-            <Line k="reference_used" v={r.snapshotReference} str />
+            {/* The reference with its geography needs about 26rem; a narrower block (a phone,
+                the lg column) shows code and year, so the value never breaks in two. */}
+            <span className="@[26rem]:hidden">
+              <Line k="reference_used" v="0141 · 2023" str />
+            </span>
+            <span className="hidden @[26rem]:inline">
+              <Line k="reference_used" v={r.snapshotReference} str />
+            </span>
             <Line k="engine_version" v="12.0.0" str />
             <Line k="input_fingerprint" v="sha256:9f2c…41ab" str last />
             <span className={P}>{'}'}</span>
@@ -117,7 +124,7 @@ export function Security() {
   return (
     <section id="seguridad" className="bg-r0-bg py-16 sm:py-24">
       <Reveal className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
-        <div className="lg:col-span-7">
+        <div className="min-w-0 lg:col-span-7">
           <SectionHeading title={s.title} statement={s.statement} />
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-r0-text-secondary sm:text-lg">{s.text}</p>
 
@@ -131,7 +138,7 @@ export function Security() {
           </dl>
         </div>
 
-        <figure className="lg:sticky lg:top-24 lg:col-span-5">
+        <figure className="min-w-0 lg:sticky lg:top-24 lg:col-span-5">
           <RecordCard />
           <figcaption className="mt-3 text-xs text-r0-text-muted">{s.record.exampleNote}</figcaption>
         </figure>

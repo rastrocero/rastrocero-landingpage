@@ -36,6 +36,9 @@
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
 }
 
+/* A phone whose visible height is short (older, small models): the hero tightens so its art still shows. */
+@custom-variant short-phone (@media (max-width: 639px) and (max-height: 620px));
+
 @layer base {
   html {
     scroll-behavior: smooth;

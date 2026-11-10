@@ -16,7 +16,7 @@ function RatioViz() {
   return (
     <div ref={ref} className="rounded-xl border border-r0-border bg-white p-6 sm:p-10">
       {/* One shared cell size so the single operational dot matches each financed dot exactly. */}
-      <div className="flex items-end justify-center gap-6 [--cell:6px] sm:gap-10 sm:[--cell:10px] lg:[--cell:9px] xl:[--cell:12px]">
+      <div className="flex items-end justify-center gap-4 [--cell:clamp(4px,calc((100vw_-_170px)_/_35),6px)] min-[390px]:gap-6 sm:gap-10 sm:[--cell:10px] lg:[--cell:9px] xl:[--cell:12px]">
         <div className="flex w-16 shrink-0 flex-col items-center sm:w-20">
           <span className="font-mono text-xs font-semibold text-r0-primary">1×</span>
           <span
@@ -62,7 +62,7 @@ export function Challenge() {
   return (
     <section id="contexto" className="bg-r0-bg py-16 sm:py-24">
       <Reveal className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
-        <div className="lg:col-span-5">
+        <div className="min-w-0 lg:col-span-5">
           <SectionHeading title={c.title} statement={c.statement} />
           <p className="mt-6 text-base leading-relaxed text-r0-text-secondary sm:text-lg">{c.intro}</p>
 
@@ -76,7 +76,7 @@ export function Challenge() {
           </dl>
         </div>
 
-        <div className="lg:col-span-7">
+        <div className="min-w-0 lg:col-span-7">
           <RatioViz />
         </div>
       </Reveal>

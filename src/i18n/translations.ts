@@ -41,6 +41,7 @@ const es = {
     bank: 'Tu Banco',
     unit: 'tCO₂e',
     rail: { home: 'Inicio', financed: 'PCAF' },
+    tabs: { chat: 'Chat', dashboard: 'Dashboard', inbox: 'Bandeja' },
     sidebar: {
       agent: 'Emissions Banker',
       newChat: 'Nuevo chat',
@@ -340,6 +341,7 @@ const en: Dict = {
     bank: 'Your Bank',
     unit: 'tCO₂e',
     rail: { home: 'Home', financed: 'PCAF' },
+    tabs: { chat: 'Chat', dashboard: 'Dashboard', inbox: 'Inbox' },
     sidebar: {
       agent: 'Emissions Banker',
       newChat: 'New chat',
