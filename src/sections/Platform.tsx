@@ -27,8 +27,10 @@ interface PanelProps {
 }
 
 function Panel({ label, title, text, children }: PanelProps) {
+  // min-w-0: without it the single column of a phone grows to the widest unbreakable
+  // line inside any panel and every panel spills past the page gutter.
   return (
-    <article className="flex flex-col rounded-xl border border-r0-border bg-white p-6 sm:p-8">
+    <article className="flex min-w-0 flex-col rounded-xl border border-r0-border bg-white p-6 sm:p-8">
       <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-r0-primary-medium">{label}</p>
       <h3 className="mt-3 font-display text-xl font-semibold leading-snug tracking-tight text-balance text-r0-text">{title}</h3>
       <p className="mt-2.5 text-[15px] leading-relaxed text-r0-text-secondary">{text}</p>
@@ -49,10 +51,13 @@ function Upload() {
         <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-r0-primary-light ring-1 ring-r0-border">
           <FileSpreadsheet className="size-[18px]" strokeWidth={1.8} />
         </span>
-        <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-r0-text">{u.file}</span>
-        <span className="shrink-0 text-[13px] text-r0-text-secondary">
-          <span className="font-mono font-semibold text-r0-text">{formatNumber(ROWS_READ, locale, 0)}</span> {u.rows}
-        </span>
+        {/* On a phone the count sits under the file name, so neither is cut. */}
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+          <span className="min-w-0 truncate font-mono text-[13px] text-r0-text sm:flex-1">{u.file}</span>
+          <span className="shrink-0 text-[13px] text-r0-text-secondary">
+            <span className="font-mono font-semibold text-r0-text">{formatNumber(ROWS_READ, locale, 0)}</span> {u.rows}
+          </span>
+        </div>
       </div>
       <ul className="mt-4 divide-y divide-r0-border overflow-hidden rounded-md bg-white ring-1 ring-r0-border">
         {u.classes.map((c) => {
@@ -60,7 +65,7 @@ function Upload() {
           return (
             <li key={c.code} className="flex items-center gap-2.5 px-3.5 py-2.5">
               <Icon className="size-4 shrink-0 text-r0-primary" strokeWidth={1.7} />
-              <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-r0-text">{c.name}</span>
+              <span className="min-w-0 flex-1 text-[13px] font-medium text-r0-text max-sm:leading-snug">{c.name}</span>
               <span className="font-mono text-[13px] text-r0-text">{c.count}</span>
             </li>
           )
@@ -69,7 +74,7 @@ function Upload() {
           <span aria-hidden className="flex size-4 shrink-0 items-center justify-center">
             <span className="h-px w-3 bg-r0-text-muted" />
           </span>
-          <span className="min-w-0 flex-1 truncate text-[13px] text-r0-text-secondary">{u.excluded.name}</span>
+          <span className="min-w-0 flex-1 text-[13px] text-r0-text-secondary max-sm:leading-snug">{u.excluded.name}</span>
           <span className="font-mono text-[13px] text-r0-text-secondary">{u.excluded.count}</span>
         </li>
       </ul>

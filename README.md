@@ -92,6 +92,23 @@ Se suman tres colores corporativos: `r0-leaf` (hoja del logo), `r0-ink` (gris de
 - Criterio: un solo botón lleno por pantalla, títulos en un color, sin íconos decorativos;
   la jerarquía la hacen la tipografía y las líneas finas, como en la plataforma.
 
+### Móvil
+
+Se revisa con el alto que de verdad queda visible en un teléfono, no con el de la pantalla: unos
+390 × 660 px en un iPhone con las barras del navegador. Un alto mayor esconde los cortes.
+
+- **Hero:** el texto y el arte comparten la primera pantalla. El título toma su tamaño del ancho
+  (`clamp(1.5rem, 9vw - 3px, 2.15rem)`) para que «emisiones financiadas» entre siempre en una línea
+  y el título quede en tres; los dos enlaces van en fila y el relleno inferior reserva la mitad de
+  abajo del arte. La variante `short-phone` (definida en `index.css`) lo ajusta más en teléfonos de
+  menos de 620 px de alto.
+- **Maqueta:** bajo `md` no hay riel ni barra lateral, así que las tres pantallas se eligen con las
+  pestañas Chat, Dashboard y Bandeja. El marco tiene una altura fija para que la página no se mueva
+  mientras rotan.
+- **Rejillas de una columna:** cada hijo lleva `min-w-0`. Sin eso la columna toma el ancho de la
+  línea más larga que no se puede partir (un nombre de archivo, una fila con `truncate`) y la
+  página se desplaza hacia el costado en teléfonos de 320 a 375 px.
+
 El idioma se elige con el botón ES/EN, con `?lang=en` en la URL, y se recuerda por navegador.
 
 ## Deploy

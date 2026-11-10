@@ -333,8 +333,9 @@ function Composer({ step }: { step: number }) {
   )
 }
 
-function ChatView({ step }: { step: number }) {
+function ChatView({ step, compact = false }: { step: number; compact?: boolean }) {
   const { locale } = useLanguage()
+  const gutter = compact ? 'px-4' : 'px-6'
   const scroller = useRef<HTMLDivElement>(null)
 
   // Like the product: the thread stays scrolled to its newest message.
@@ -345,12 +346,12 @@ function ChatView({ step }: { step: number }) {
 
   return (
     <div className="flex h-full flex-col bg-r0-bg">
-      <div ref={scroller} className="min-h-0 flex-1 overflow-hidden px-6">
+      <div ref={scroller} className={cn('min-h-0 flex-1 overflow-hidden', gutter)}>
         <div className="mx-auto flex w-full max-w-[560px] flex-col gap-3.5 py-5">
           <Thread step={step} />
         </div>
       </div>
-      <div className="shrink-0 px-6 pb-4 pt-1">
+      <div className={cn('shrink-0 pb-4 pt-1', gutter)}>
         <div className="mx-auto w-full max-w-[560px]">
           <Composer step={step} />
         </div>
@@ -361,13 +362,17 @@ function ChatView({ step }: { step: number }) {
 
 /* ─── Dashboard ─────────────────────────────────────────────────────── */
 
-function Segments({ items, active = 0 }: { items: string[]; active?: number }) {
+function Segments({ items, active = 0, fill = false }: { items: string[]; active?: number; fill?: boolean }) {
   return (
-    <div className="inline-flex divide-x divide-gray-300 overflow-hidden rounded-lg border border-gray-300 bg-white">
+    <div className={cn('divide-x divide-gray-300 overflow-hidden rounded-lg border border-gray-300 bg-white', fill ? 'flex w-full' : 'inline-flex')}>
       {items.map((item, i) => (
         <span
           key={item}
-          className={cn('whitespace-nowrap px-2.5 py-1.5 text-[11px]', i === active ? 'bg-r0-primary font-medium text-white' : 'text-gray-600')}
+          className={cn(
+            'whitespace-nowrap py-1.5',
+            fill ? 'flex-auto px-1 text-center text-[10px] min-[360px]:px-1.5 min-[360px]:text-[11px]' : 'px-2.5 text-[11px]',
+            i === active ? 'bg-r0-primary font-medium text-white' : 'text-gray-600',
+          )}
         >
           {item}
         </span>
@@ -376,9 +381,21 @@ function Segments({ items, active = 0 }: { items: string[]; active?: number }) {
   )
 }
 
-function Metric({ label, accent, children, note }: { label: string; accent?: string; children: ReactNode; note?: string }) {
+function Metric({
+  label,
+  accent,
+  children,
+  note,
+  className,
+}: {
+  label: string
+  accent?: string
+  children: ReactNode
+  note?: string
+  className?: string
+}) {
   return (
-    <div className={cn('min-w-0 rounded-lg border border-r0-border bg-r0-surface p-3', accent && `border-l-[3px] ${accent}`)}>
+    <div className={cn('min-w-0 rounded-lg border border-r0-border bg-r0-surface p-3', accent && `border-l-[3px] ${accent}`, className)}>
       <p className={cn('truncate text-[10.5px] font-medium text-r0-text-secondary', accent && 'text-right')}>{label}</p>
       <p className="mt-1.5 truncate text-[19px] font-semibold leading-6 tabular-nums text-r0-text">{children}</p>
       {note && <p className="mt-1 truncate text-[10.5px] text-r0-text-secondary">{note}</p>}
@@ -397,7 +414,8 @@ function ChartHeader({ title, tag }: { title: string; tag: string }) {
   )
 }
 
-function DashboardView() {
+/** `compact` is the phone layout: the selectors wrap, the indicators stack and the sector bars take the rest. */
+function DashboardView({ compact = false }: { compact?: boolean }) {
   const { t, locale } = useLanguage()
   const d = t.mockup.dashboard
   const unit = <span className="ml-1 text-[11px] font-normal text-r0-text-secondary">{t.mockup.unit}</span>
@@ -405,25 +423,33 @@ function DashboardView() {
   const peak = Math.max(...SERIES)
 
   return (
-    <div className="anim-rail-in flex h-full flex-col overflow-hidden bg-r0-bg px-5 py-4">
-      <p className="text-[10.5px] font-medium text-r0-text-secondary">{d.eyebrow}</p>
+    <div className={cn('anim-rail-in flex h-full flex-col overflow-hidden bg-r0-bg py-4', compact ? 'px-4' : 'px-5')}>
+      {!compact && <p className="text-[10.5px] font-medium text-r0-text-secondary">{d.eyebrow}</p>}
       <h3 className="mt-0.5 text-[19px] font-semibold tracking-tight text-r0-text">{d.title}</h3>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Segments items={d.views} />
-        <Segments items={d.scopes} />
+        {!compact && <Segments items={d.scopes} />}
         <span className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-[11px] font-medium text-r0-text">
           {d.year}
           <ChevronDown className="size-3" />
         </span>
-        <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-r0-text">
-          {d.operations}
-          <ArrowRight className="size-3" />
-        </span>
+        {compact ? (
+          <Segments items={d.scopes} fill />
+        ) : (
+          <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-r0-text">
+            {d.operations}
+            <ArrowRight className="size-3" />
+          </span>
+        )}
       </div>
 
-      <div className="mt-3.5 grid grid-cols-3 gap-3">
-        <Metric label={d.emissions} note={`${d.emissionsNote}: ${formatNumber(ESTIMATE, locale, 2)} ${t.mockup.unit}`}>
+      <div className={cn('grid gap-3', compact ? 'mt-3 grid-cols-2' : 'mt-3.5 grid-cols-3')}>
+        <Metric
+          label={d.emissions}
+          note={`${d.emissionsNote}: ${formatNumber(ESTIMATE, locale, 2)} ${t.mockup.unit}`}
+          className={compact ? 'col-span-2' : undefined}
+        >
           {formatNumber(OFFICIAL, locale, 2)}
           {unit}
         </Metric>
@@ -432,33 +458,40 @@ function DashboardView() {
           <span className="text-[11px] font-normal text-r0-text-muted"> / {OPERATIONS.total}</span>
         </Metric>
         <Metric label={d.quality} accent="border-l-r0-accent">
-          2 · 4 · 5<span className="ml-1 text-[11px] font-normal text-r0-text-secondary">PCAF</span>
+          2 · 4 · 5<span className={cn('ml-1 text-[11px] font-normal text-r0-text-secondary', compact && 'max-[374px]:hidden')}>PCAF</span>
         </Metric>
       </div>
 
-      <div className="mt-3 grid min-h-0 flex-1 grid-cols-5 grid-rows-1 gap-3">
-        <div className="col-span-3 flex min-h-0 flex-col rounded-lg border border-r0-border bg-r0-surface p-3.5">
-          <ChartHeader title={d.seriesTitle} tag={d.seriesTag} />
-          <div className="flex min-h-0 flex-1 items-end gap-4 border-b border-r0-border px-2">
-            {SERIES.map((value, i) => (
-              <span
-                key={d.months[i]}
-                className="anim-bar flex-1 rounded-t-[3px] bg-r0-sun"
-                style={{ height: `${(value / peak) * 92}%`, animationDelay: `${i * 70}ms` }}
-              />
-            ))}
+      <div className={cn('mt-3 min-h-0 flex-1', compact ? 'flex' : 'grid grid-cols-5 grid-rows-1 gap-3')}>
+        {!compact && (
+          <div className="col-span-3 flex min-h-0 flex-col rounded-lg border border-r0-border bg-r0-surface p-3.5">
+            <ChartHeader title={d.seriesTitle} tag={d.seriesTag} />
+            <div className="flex min-h-0 flex-1 items-end gap-4 border-b border-r0-border px-2">
+              {SERIES.map((value, i) => (
+                <span
+                  key={d.months[i]}
+                  className="anim-bar flex-1 rounded-t-[3px] bg-r0-sun"
+                  style={{ height: `${(value / peak) * 92}%`, animationDelay: `${i * 70}ms` }}
+                />
+              ))}
+            </div>
+            <div className="flex gap-4 px-2 pt-1.5 text-center text-[9.5px] text-r0-text-secondary">
+              {d.months.map((month) => (
+                <span key={month} className="flex-1">
+                  {month}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="flex gap-4 px-2 pt-1.5 text-center text-[9.5px] text-r0-text-secondary">
-            {d.months.map((month) => (
-              <span key={month} className="flex-1">
-                {month}
-              </span>
-            ))}
-          </div>
-        </div>
+        )}
 
-        <div className="col-span-2 flex min-h-0 flex-col overflow-hidden rounded-lg border border-r0-border bg-r0-surface p-3.5">
-          <ChartHeader title={d.sectorTitle} tag={t.mockup.unit} />
+        <div
+          className={cn(
+            'flex min-h-0 flex-col overflow-hidden rounded-lg border border-r0-border bg-r0-surface p-3.5',
+            compact ? 'flex-1' : 'col-span-2',
+          )}
+        >
+          <ChartHeader title={d.sectorTitle} tag={compact ? d.seriesTag : t.mockup.unit} />
           <ul className="flex min-h-0 flex-1 flex-col justify-between gap-1">
             {SECTORS.map((value, i) => (
               <li key={d.sectors[i]}>
@@ -495,13 +528,13 @@ function InboxSection({ title, total, children }: { title: string; total: string
   )
 }
 
-function InboxView() {
+function InboxView({ compact = false }: { compact?: boolean }) {
   const { t, locale } = useLanguage()
   const b = t.mockup.inbox
   const tons = (value: number) => `${formatNumber(value, locale, 2)} ${t.mockup.unit}`
 
   return (
-    <div className="anim-rail-in h-full overflow-hidden bg-r0-bg px-5 py-5">
+    <div className={cn('anim-rail-in h-full overflow-hidden bg-r0-bg', compact ? 'px-4 py-4' : 'px-5 py-5')}>
       <div className="mx-auto max-w-[620px] space-y-4">
         <h3 className="text-[19px] font-semibold tracking-tight text-r0-text">{b.title}</h3>
 
@@ -538,26 +571,26 @@ function InboxView() {
   )
 }
 
-/* ─── Mobile shell (under md the platform shows the conversation full width) ── */
+/* ─── Mobile shell ──────────────────────────────────────────────────── */
 
-function MobileShell() {
+/*
+ * Under md the platform shows one screen at a time, full width, with the menu
+ * button in its header. The frame keeps one height for the three screens, so
+ * the page never moves while they rotate.
+ */
+function MobileShell({ title, children }: { title: string; children: ReactNode }) {
   const { t } = useLanguage()
 
   return (
-    <div className="bg-r0-bg font-display">
-      <div className="flex h-12 items-center justify-between border-b border-r0-border bg-r0-surface px-3">
-        <div className="flex items-center gap-2.5">
-          <Menu className="size-5 text-r0-text-secondary" strokeWidth={1.75} aria-hidden />
-          <span className="text-[13.5px] font-semibold text-r0-text">{t.mockup.sidebar.agent}</span>
+    <div className="flex h-[600px] flex-col bg-r0-bg font-display">
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-r0-border bg-r0-surface px-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Menu className="size-5 shrink-0 text-r0-text-secondary" strokeWidth={1.75} aria-hidden />
+          <span className="truncate text-[13.5px] font-semibold text-r0-text">{title}</span>
         </div>
-        <span className="truncate pl-3 text-[12px] text-r0-text-secondary">{t.mockup.bank}</span>
+        <span className="shrink-0 pl-3 text-[12px] text-r0-text-secondary">{t.mockup.bank}</span>
       </div>
-      <div className="flex flex-col gap-3.5 px-4 pb-3 pt-5">
-        <Thread step={LAST_STEP} />
-      </div>
-      <div className="px-4 pb-4">
-        <Composer step={LAST_STEP} />
-      </div>
+      <div className="relative min-h-0 flex-1">{children}</div>
     </div>
   )
 }
@@ -568,8 +601,8 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
   const { t } = useLanguage()
   const [view, setView] = useState<View>('chat')
   const [step, setStep] = useState(0)
-  // 0 while playing; otherwise the time of the last manual pick.
-  const [pausedAt, setPausedAt] = useState(0)
+  // 0 while playing; each manual pick raises it, which also restarts the wait before playing again.
+  const [paused, setPaused] = useState(0)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.3 })
   const reducedMotion = prefersReducedMotion()
   const moving = inView && !reducedMotion
@@ -584,8 +617,8 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
   // The screens rotate by themselves until someone picks one.
   useEffect(() => {
     if (!moving) return
-    if (pausedAt) {
-      const timer = setTimeout(() => setPausedAt(0), RESUME_MS)
+    if (paused) {
+      const timer = setTimeout(() => setPaused(0), RESUME_MS)
       return () => clearTimeout(timer)
     }
     if (view === 'chat' && step < LAST_STEP) return
@@ -598,10 +631,10 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
       view === 'chat' ? CHAT_STEP_MS[LAST_STEP] : VIEW_MS[view],
     )
     return () => clearTimeout(timer)
-  }, [moving, pausedAt, view, step])
+  }, [moving, paused, view, step])
 
   const pick = (next: View) => {
-    setPausedAt(Date.now())
+    setPaused((n) => n + 1)
     setView(next)
     if (next === 'chat') setStep(0)
   }
@@ -609,44 +642,75 @@ export function AppMockup({ className, style }: { className?: string; style?: CS
   // Without motion there is nothing to play: the finished conversation.
   const shownStep = reducedMotion ? LAST_STEP : step
 
+  const tabs: { view: View; label: string }[] = [
+    { view: 'chat', label: t.mockup.tabs.chat },
+    { view: 'dashboard', label: t.mockup.tabs.dashboard },
+    { view: 'inbox', label: t.mockup.tabs.inbox },
+  ]
+  const screen = (compact: boolean) =>
+    view === 'chat' ? (
+      <ChatView step={shownStep} compact={compact} />
+    ) : view === 'dashboard' ? (
+      <DashboardView compact={compact} />
+    ) : (
+      <InboxView compact={compact} />
+    )
+
   return (
-    <div
-      ref={ref}
-      className={cn(
-        'overflow-hidden rounded-xl border border-r0-border bg-white shadow-[0_40px_80px_-40px_rgba(15,36,25,0.45),0_12px_24px_-12px_rgba(15,36,25,0.18)] sm:rounded-2xl',
-        className,
-      )}
-      style={style}
-    >
-      <WindowChrome url={t.mockup.url} />
-
-      {/* The platform is set in Montserrat throughout. */}
-      <div className="hidden h-[500px] font-display md:flex lg:h-[540px]">
-        <nav className="flex w-14 shrink-0 flex-col items-center border-r border-r0-border bg-r0-surface" aria-label="RastroCero">
-          <div className="flex h-12 shrink-0 items-center justify-center">
-            <img src="/apple-touch-icon.png" alt="" className="size-8 rounded-lg" />
-          </div>
-          <div className="flex flex-1 flex-col items-center gap-1 pt-2">
-            <RailButton icon={House} label={t.mockup.rail.home} active={view === 'inbox'} onClick={() => pick('inbox')} />
-            <RailButton icon={BriefcaseBusiness} label={t.mockup.rail.financed} active={view !== 'inbox'} onClick={() => pick('chat')} />
-          </div>
-          <div className="flex shrink-0 justify-center py-3">
-            <span className="size-7 rounded-full bg-gradient-to-br from-r0-mint to-r0-accent ring-1 ring-r0-border" />
-          </div>
-        </nav>
-
-        {view === 'inbox' ? <HomeSidebar /> : <BankerSidebar view={view} onPick={pick} />}
-
-        <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar bank={t.mockup.bank} />
-          <div className="relative min-h-0 flex-1">
-            {view === 'chat' ? <ChatView step={shownStep} /> : view === 'dashboard' ? <DashboardView /> : <InboxView />}
-          </div>
-        </div>
+    <div ref={ref}>
+      {/* A phone has no rail or sidebar to pick a screen from: these tabs do it. */}
+      <div className="mb-3 flex gap-2 md:hidden">
+        {tabs.map((tab) => (
+          <button
+            key={tab.view}
+            type="button"
+            onClick={() => pick(tab.view)}
+            aria-pressed={view === tab.view}
+            className={cn(
+              'inline-flex h-10 flex-1 items-center justify-center rounded-lg border px-2 text-[13px] font-medium transition-colors',
+              view === tab.view ? 'border-r0-primary bg-r0-primary text-white' : 'border-r0-border bg-white text-r0-text-secondary',
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <div className="md:hidden">
-        <MobileShell />
+      <div
+        className={cn(
+          'overflow-hidden rounded-xl border border-r0-border bg-white shadow-[0_40px_80px_-40px_rgba(15,36,25,0.45),0_12px_24px_-12px_rgba(15,36,25,0.18)] sm:rounded-2xl',
+          className,
+        )}
+        style={style}
+      >
+        <WindowChrome url={t.mockup.url} />
+
+        {/* The platform is set in Montserrat throughout. */}
+        <div className="hidden h-[500px] font-display md:flex lg:h-[540px]">
+          <nav className="flex w-14 shrink-0 flex-col items-center border-r border-r0-border bg-r0-surface" aria-label="RastroCero">
+            <div className="flex h-12 shrink-0 items-center justify-center">
+              <img src="/apple-touch-icon.png" alt="" className="size-8 rounded-lg" />
+            </div>
+            <div className="flex flex-1 flex-col items-center gap-1 pt-2">
+              <RailButton icon={House} label={t.mockup.rail.home} active={view === 'inbox'} onClick={() => pick('inbox')} />
+              <RailButton icon={BriefcaseBusiness} label={t.mockup.rail.financed} active={view !== 'inbox'} onClick={() => pick('chat')} />
+            </div>
+            <div className="flex shrink-0 justify-center py-3">
+              <span className="size-7 rounded-full bg-gradient-to-br from-r0-mint to-r0-accent ring-1 ring-r0-border" />
+            </div>
+          </nav>
+
+          {view === 'inbox' ? <HomeSidebar /> : <BankerSidebar view={view} onPick={pick} />}
+
+          <div className="flex min-w-0 flex-1 flex-col">
+            <TopBar bank={t.mockup.bank} />
+            <div className="relative min-h-0 flex-1">{screen(false)}</div>
+          </div>
+        </div>
+
+        <div className="md:hidden">
+          <MobileShell title={view === 'inbox' ? t.mockup.rail.home : t.mockup.sidebar.agent}>{screen(true)}</MobileShell>
+        </div>
       </div>
     </div>
   )
